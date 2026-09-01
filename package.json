@@ -1,0 +1,24 @@
+{
+  "name": "plataforma-de-cine-teatro",
+  "version": "1.0.0",
+  "description": "[![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Z13r0/Plataforma-de-Cine-Teatro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Z13r0/Plataforma-de-Cine-Teatro/issues"
+  },
+  "homepage": "https://github.com/Z13r0/Plataforma-de-Cine-Teatro#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  }
+}
