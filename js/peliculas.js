@@ -62,7 +62,7 @@ function mostrarPeliculas(listaPeliculas = DB.peliculas) {
 
         // Renderiza los botones con los horarios de las peliculas
         const botonesHorarios = horarios.map(hora =>
-            '<a href="butacas.html?peliculaId=${pelicula.id}$hora=${encodeURIComponent(hora)" class="btn btn-outline-danger btn-sm">${hora}</a>'
+            '<a href="butacas.html?peliculaId=${pelicula.id}$hora=${encodeURIComponent(hora)}" class="btn btn-outline-danger btn-sm">${hora}</a>'
         ).join("");
 
         // Estructura de la Card con clases de Bootstrap Grid para responsive design
