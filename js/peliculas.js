@@ -61,6 +61,7 @@ function mostrarPeliculas(listaPeliculas = DB.peliculas) {
         const horarios = pelicula.horarios || ["18:00 hrs", "20:30 hrs", "22:15 hrs"];
 
         // Renderiza los botones con los horarios de las peliculas
+        // Corregir 
         const botonesHorarios = horarios.map(hora =>
             '<a href="butacas.html?peliculaId=${pelicula.id}&hora=${encodeURIComponent(hora)}" class="btn btn-outline-danger btn-sm">${hora}</a>'
         ).join("");
