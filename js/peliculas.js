@@ -57,26 +57,50 @@ function mostrarPeliculas(listaPeliculas = DB.peliculas) {
         // Se obtiene la clase de colores segun la edad de la pelicula
         const colorBadge = obtenerColorClasificacion(pelicula.clasificacion);
 
+        // Permite renderizar los horarios de las peliculas
+        const horarios = pelicula.horarios || ["18:00 hrs", "20:30 hrs", "22:15 hrs"];
+
+        // Renderiza los botones con los horarios de las peliculas
+        const botonesHorarios = horarios.map(hora =>
+            '<a href="butacas.html?peliculaId=${pelicula.id}&hora=${encodeURIComponent(hora)" class="btn btn-outline-danger btn-sm">&{hora}</a>'
+        ).join("");
+
         // Estructura de la Card con clases de Bootstrap Grid para responsive design
         const cardHTML = `
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 bg-secondary text-white border-0 shadow-sm">
-                    <img src="${pelicula.imagen}" class="card-img-top" alt="${pelicula.titulo}" style="height: 300px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column">
-                        <span class="badge bg-danger mb-2 w-auto align-self-start">${pelicula.genero}</span>
-                        <h5 class="card-title h6 fw-bold">${pelicula.titulo}</h5>
-                        
-                        <!-- Puntuación y Botón/Badge de Edad -->
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="small">⭐ ${pelicula.valoracion}</span>
-                            <span class="badge ${colorBadge}">${pelicula.clasificacion}</span>
-                        </div>
+            <div class="card bg-black text-light border-secondary shadow rounded-3 overflow-hidden mb-4">
+                <div class="row g-0 align-items-center">
 
-                        <p class="card-text text-light small flex-grow-1">${pelicula.sinopsis.substring(0, 70)}...</p>
-                        <a href="detalle.html?id=${pelicula.id}&tipo=cine" class="btn btn-outline-light btn-sm mt-auto w-100">Ver Funciones</a>
-                    </div>
+                <!-- Imagen / Poster de la pelicula -->
+                <div class="col12 col-md-4 col-lg-3">
+                    <img src= "${pelicula.imagen}" class="img-fluid w-100 h-100 object-fit-cover" alt="${pelicula.titulo}" style="min-height: 220px; max-height: 250px;">
                 </div>
+
+                <!-- Información y Horarios de Peliculas -->
+                <div class="col-12 col-md-8 col-lg-9">
+                    <div class="card-body p-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+
+                <!-- Detalles Pelicula -->
+                <div>
+                    <div class="d-flex align-item-center gap-2 mb-2 flex-warp">
+                        <span class="badge bg-danger">${pelicula.genero}</span>
+                        <span class="badge ${colorBadge}">${pelicula.clasificacion}</span>
+                        <span class="text-warning small fw-bold"><i class="bi bi-star-fill me-1"></i>${pelicula.valoracion}</span>
+                    </div>
+                    <h3 class="card-title fw-bold mb-1">${pelicula.titulo}</h3>
+                    <p class="text-secondary small mb-2">
+                        <i class="bi bi-clock me-1""></i>Duración: ${pelicula.duracion || '120 min'} | Sala IMAX
+                    </p>
+                    <p class="card-text text-light opacity-75 small b-0" style="max-width: 500px;">${pelicula.sinopsis}</p>
+                </div>
+
+                <!-- Botones de Horarios Disponibles -->
+                <div class="text-lg-end">
+                    <span class="d-block text-secondary small mb-2 fw-semibol">Horarios Disponibles:</span>
+                        <div class="d-flex flex-warp gap-2 justify-content-lg-end">${botonesHorarios}</div>
+                        </div>
+                </div> 
             </div>
+        </div>
         `;
     
         // Nos agrega la tarjeta al contenedor HTML
