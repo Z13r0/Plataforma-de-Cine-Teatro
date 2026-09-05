@@ -1,61 +1,225 @@
+// Esperamos a que todo el HTML termine de cargarse
 document.addEventListener("DOMContentLoaded", () => {
+
+    // Cargamos todas las funciones al entrar a la página
     cargarFunciones();
+
+    // Activamos los botones para cambiar de fecha
     configurarEventosFecha();
 });
 
-// Funcion que sirve para cargar el contenido de las funciones
 
-function cargarFunciones() {
+// ======================================================
+// FUNCIÓN: cargarFunciones
+// ======================================================
+// Esta función obtiene las funciones desde DB.funciones
+// y las muestra en la página.
+// ======================================================
+
+function cargarFunciones(fechaSeleccionada = "") {
+
+    // Buscamos el contenedor donde mostraremos las funciones
     const contenedor = document.getElementById("contenedorFunciones");
-    if (!contenedor) return;
-        
+
+    // Si no existe, detenemos la función
+    if (!contenedor) {
+        return;
+    }
+
+    // Limpiamos el contenido anterior
     contenedor.innerHTML = "";
 
-    // Combinar peliculas y obras para listar todas las funciones activas 
-    const todoElContenido = [
-        DB.peliculas.map(item => ({ item, tipo: "cine" })),
-        DB.obras.map(item => ({ item, tipo: "teatro"}))
-    ];
 
-    todoElContenido.forEach(item => {
-        const horarios = item.horarios || ["18:00 hrs", "20:30 hrs", "22:15 hrs"];
-        const botonesHorarios = horarios.map(hora = >
-            `<a href="butacas.html?id=${item.id}&tipo=${item.tipo}&hora=${encodeURIComponent(hora)}" class="btn btn-outline-danger btn-sm">${hora}</a>`
-        ).join(" ");
+    // ==================================================
+    // FILTRAR FUNCIONES
+    // ==================================================
+
+    const funciones = DB.funciones.filter(funcion => {
+
+        // Si no se seleccionó ninguna fecha,
+        // mostramos todas las funciones
+        if (fechaSeleccionada === "") {
+            return true;
+        }
+
+        // Si hay una fecha seleccionada,
+        // mostramos solo las funciones de ese día
+        return funcion.fecha === fechaSeleccionada;
+    });
+
+
+    // ==================================================
+    // SI NO HAY FUNCIONES
+    // ==================================================
+
+    if (funciones.length === 0) {
+
+        contenedor.innerHTML = `
+            <div class="alert alert-warning text-center">
+                No hay funciones disponibles para esta fecha.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ==================================================
+    // MOSTRAR LAS FUNCIONES
+    // ==================================================
+
+    funciones.forEach(funcion => {
+
+        // Dependiendo del tipo de contenido,
+        // buscamos en películas o en obras
+        const lista = funcion.tipo === "teatro"
+            ? DB.obras
+            : DB.peliculas;
+
+
+        // Buscamos la película u obra correspondiente
+        const contenido = lista.find(
+            item => item.id === funcion.contenidoId
+        );
+
+
+        // Buscamos la sala correspondiente
+        const sala = DB.salas.find(
+            item => item.id === funcion.salaId
+        );
+
+
+        // Si falta algún dato, no mostramos esta función
+        if (!contenido || !sala) {
+            return;
+        }
+
+
+        // ==================================================
+        // CREAR TARJETA
+        // ==================================================
 
         contenedor.innerHTML += `
-            <div class="card bg-black text-light border-secondary shadow rounded-3 overflow-hidden">
+
+            <div class="card bg-black text-light border-secondary shadow rounded-3 overflow-hidden mb-4">
+
                 <div class="row g-0 align-items-center">
+
+                    <!-- Imagen -->
                     <div class="col-12 col-md-3">
-                        <img src="${item.imagen}" class="img-fluid w-100 h-100 object-fit-cover" style="max-height: 220px;" alt="${item.titulo}">
+
+                        <img
+                            src="${contenido.imagen}"
+                            class="img-fluid w-100"
+                            style="height:220px; object-fit:cover;"
+                            alt="${contenido.titulo}"
+                        >
+
                     </div>
+
+
+                    <!-- Información -->
                     <div class="col-12 col-md-9">
-                        <div class="card-body d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-                            <div>
-                                <span class="badge bg-danger mb-2">${item.genero}</span>
-                                <h3 class="fw-bold mb-1">${item.titulo}</h3>
-                                <p class="text-secondary small mb-1"><i class="bi bi-clock me-1"></i>${item.duracion || '120 min'}</p>
-                                <p class="small opacity-75 mb-0">${item.sinopsis.substring(0, 100)}...</p>
-                            </div>
-                            <div class="text-lg-end">
-                                <span class="d-block text-secondary small mb-2 fw-semibold">Horarios Disponibles:</span>
-                                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">${botonesHorarios}</div>
-                            </div>
+
+                        <div class="card-body">
+
+                            <span class="badge bg-danger mb-2">
+                                ${contenido.genero}
+                            </span>
+
+                            <h3 class="fw-bold">
+                                ${contenido.titulo}
+                            </h3>
+
+                            <p class="text-secondary mb-1">
+                                <i class="bi bi-building"></i>
+                                ${sala.nombre}
+                            </p>
+
+                            <p class="text-secondary mb-3">
+
+                                <i class="bi bi-calendar"></i>
+
+                                ${funcion.fecha}
+
+                                <span class="mx-2">|</span>
+
+                                <i class="bi bi-clock"></i>
+
+                                ${funcion.hora}
+
+                            </p>
+
+
+                            <!-- Botón que lleva a las butacas -->
+                            <a
+                                href="butacas.html?id=${funcion.contenidoId}&tipo=${funcion.tipo}&funcionId=${funcion.id}"
+                                class="btn btn-danger"
+                            >
+
+                                <i class="bi bi-ticket-perforated"></i>
+
+                                Seleccionar función
+
+                            </a>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
         `;
     });
 }
 
-// Funcion que sirve para configurar las fechas
+
+// ======================================================
+// FUNCIÓN: configurarEventosFecha
+// ======================================================
+// Añade un evento CLICK a cada botón de fecha.
+// ======================================================
+
 function configurarEventosFecha() {
+
+    // Obtenemos todos los botones que tengan
+    // la clase .btn-fecha
     const botones = document.querySelectorAll(".btn-fecha");
+
+
+    // Recorremos cada botón
     botones.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.target.classList.replace("btn-outline-secondary", "btn-danger");
-            cargarFunciones();
-        })
-    })
+
+        // Cuando hacemos click...
+        btn.addEventListener("click", () => {
+
+
+            // Quitamos el color rojo de todos
+            botones.forEach(boton => {
+
+                boton.classList.remove("btn-danger");
+
+                boton.classList.add("btn-outline-secondary");
+
+            });
+
+
+            // Ponemos en rojo el botón seleccionado
+            btn.classList.remove("btn-outline-secondary");
+
+            btn.classList.add("btn-danger");
+
+
+            // Obtenemos la fecha almacenada
+            // en data-fecha
+            const fecha = btn.dataset.fecha;
+
+
+            // Recargamos las funciones usando esa fecha
+            cargarFunciones(fecha);
+
+        });
+
+    });
 }
