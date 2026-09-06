@@ -58,3 +58,8 @@
 #contenedorButacas {
   gap: 0.6rem !important;
 }
+
+.form-control::placeholder {
+    color: antiquewhite;
+    opacity: 0.4;
+}
