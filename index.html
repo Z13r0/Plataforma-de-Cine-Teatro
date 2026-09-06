@@ -1,236 +1,225 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-        <title>Cine & Teatro</title>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine & Teatro</title>
 
-        <!-- Bootstrap 5.3 CSS (CDN) -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-        <!-- Bootstrap Icons (CDN) -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        <!-- CSS Personalizado -->
-        <link rel="stylesheet" href="css/styles.css">
-    </head>
-    <body class="bg-dark text-light">
-        <!-- Encabezado y Barra de Navegacion --->
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top border-bottom border-secondary">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-dark text-light">
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top border-bottom border-secondary">
             <div class="container">
-                <!-- Logotipo de Marca (Navbar-brand permite poner fotos / logos en barra de busqueda)-->
+
+                <!-- Logo -->
                 <a class="navbar-brand fw-bold text-danger d-flex align-items-center gap-2" href="index.html">
                     <i class="bi bi-film fs-3"></i>
-                    <span>Cine & Teatro</span>   
+                    <span>Cine & Teatro</span>
                 </a>
 
-                <!-- Boton de Menu para Moviles-->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <!-- Botón menú móvil -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Menú de Navegación-->
+                <!-- Menú -->
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <!-- Inicio de la pagina -->
                         <li class="nav-item">
                             <a class="nav-link active" href="index.html">Inicio</a>
                         </li>
-                        <!-- Peliculas -->
                         <li class="nav-item">
-                            <a class="nav-link" href="peliculas.html">Peliculas</a>
+                            <a class="nav-link" href="peliculas.html">Películas</a>
                         </li>
-                        <!-- Teatro -->
                         <li class="nav-item">
                             <a class="nav-link" href="obras.html">Teatro</a>
                         </li>
-                        <!-- Comunidad -->
                         <li class="nav-item">
                             <a class="nav-link" href="comunidad.html">Comunidad</a>
                         </li>
-                        <!-- Historial de Compras -->
                         <li class="nav-item">
                             <a class="nav-link" href="historial.html">Historial</a>
                         </li>
                     </ul>
 
-                    <!-- Opciones Inicio de Sesión -->
-                    <div class="d-flex align-items-center gap-2">
-                        <a href="entradas.html" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
-                            <i class="bi bi-ticket-perforated"></i> Mis Entradas
+                    <!-- ÁREA DE SESIÓN (controlada por app.js) -->
+                    <div id="authArea" class="d-flex align-items-center gap-2">
+                        <!-- Aquí se cargan los botones automáticamente -->
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container py-4">
+
+        <!-- Hero -->
+        <section class="p-4 p-md-5 mb-4 rounded-3 bg-gradient text-white text-center text-md-start position-relative overflow-hidden shadow hero-banner">
+            <div class="row align-items-center py-2">
+                <div class="col-lg-8">
+                    <span class="badge bg-danger mb-2 px-3 py-2 fs-6">Temporada 2026</span>
+                    <h1 class="display-4 fw-bold">Bienvenido a Cine & Teatro</h1>
+                    <p class="fs-5 text-light opacity-75">
+                        Vive la magia del séptimo arte y las mejores obras teatrales en un solo lugar. Reserva tus entradas en tiempo real.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center justify-content-md-start mt-3">
+                        <a href="peliculas.html" class="btn btn-danger btn-lg px-4 fw-semibold">
+                            <i class="bi bi-film me-1"></i> Ver Películas
                         </a>
-                        <a href="login.html" class="btn btn-danger btn-sm">
-                            <i class="bi bi-person-fill"></i> Iniciar Sesión
+                        <a href="obras.html" class="btn btn-outline-light btn-lg px-4">
+                            <i class="bi bi-masks me-1"></i> Ver Obras
                         </a>
                     </div>
                 </div>
-            </header>
+            </div>
+        </section>
 
-            <!-- Contenido Principal Pagina -->
-            <main class="container py-4">
-                <!-- Aquí se construye el "Home" -->
-                 <!-- 1° Section -->
-                  <section class="p-4 p-md-5 mb-4 rounded-3 bg-gradient text-white text-center text-md-start position-relative overflow-hidden shadow hero-banner">
-                    <div class="row align-items-center py-2">
-                        <div class="col-lg-8">
-                            <span class="badge bg-danger mb-2 px-3 py-2 fs-6">Temporada 2026</span>
-                            <h1 class="display-4 fw-bold">Bienvenido a Cine & Teatro</h1>
-                            <p class="fs-5 text-light opacity-75">
-                                Vive la magia del séptimo arte y las mejores obras teatrales en un solo lugar. Reserva tus entradas en tiempo real.
-                            </p>
-                            <div class="d-flex gap-3 justify-content-center justify-content-md-start mt-3">
-                                <a href="peliculas.html" class="btn btn-danger btn-lg px-4 fw-semibold">
-                                    <i class="bi bi-film me-1"></i> Ver Peliculas
-                                </a>
-                                <a href="obras.html" class="btn btn-outline-light btn-lg px-4">
-                                    <i class="bi bi-masks me-1"></i> Ver Obras
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                  </section>
-                  <!-- Destacados -->
-                  <section class="mb-5">
-                        <h2 class="h3 fw-bold mb-3 border-start border-4 border-danger ps-2">Estrenos Destacados</h2>
-                        <div id="carruselDestacados" class="carousel slide shadow-lg rounded-3 overflow-hidden" data-bs-ride="carousel">
-
-                        <!-- Indicadores inferior -->
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="0" class="active"></button>
-                            <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="1"></button>
-                        </div>
-
-                                <!-- Diapositivas -->
-                        <div class="carousel-inner">
-                            <div class="carousel-item active" data-bs-interval="4000">
-                                <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 380px;" alt="Cine">
-                                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
-                                    <span class="badge bg-warning text-dark">Estreno de Cine</span>
-                                    <h3 class="fw-bold">Sci-Fi Odyssey 2026</h3>
-                                    <p class="mb-1">Una aventura intergaláctica sin precedentes en formato IMAX.</p>
-                                    <a href="detalle.html" class="btn btn-danger btn-sm">Ver Funciones</a>
-                                </div>
-                            </div>
-
-                            <div class="carousel-item" data-bs-interval="4000">
-                                <img src="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=1200&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 380px;" alt="Teatro">
-                                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
-                                    <span class="badge bg-primary">Gran Obra de Teatro</span>
-                                    <h3 class="fw-bold">El Fantasma de la Ópera</h3>
-                                    <p class="mb-1">La obra clásica vuelve al escenario principal en vivo.</p>
-                                    <a href="detalle.html" class="btn btn-primary btn-sm">Reservar Butacas</a>
-                                </div>
-                            </div>
-
-                            <!-- Controles Izquierda / Derecha -->
-                            
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carruselDestacados" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carruselDestacados" data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
-                    </section>
-
-                    <!-- Parte 3: Cartelera Inicial -->
-                    <section>
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2 class="h3 fw-bold mb-0 border-start border-4 border-danger ps-2">En Cartelera</h2>
-                            <a href="peliculas.html" class="btnb btn-link text-danger text-decoration-none fw-semibold">
-                                Ver Catalogo Completo <i class="bi bi-arrow-right"></i>
-                            </a>
-                        </div>
-
-                        <!-- Grilla Responsive (Sistema de cuadrícula adaptable) -->
-                        <div class="row g-4">
-                            
-                            <!-- Card 1: Pelicula-->
-                            <div class="col-12 col-sm-6 col-d-4 col-lg-3">
-                                <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                                    <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Cine</span>
-                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Pelicula 1"/>
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title fw-bold text-truncate">Inception Matrix</h5>
-                                        <p class="card-text text-secondary small mb-2">Acción / Ciencia Ficción</p>
-                                        <div class="d-flex justify-content-between align-items-center small mb-3">
-                                            <span><i class="bi bi-clock text-danger"> 2 horas y 46 mins</i></span>
-                                            <span class="badge bg-dark border border-secondary text-warning">⭐ 4.8</span>
-                                        </div>
-                                        <a href="detalle.html" class="btn btn-outline-danger w-100 mt-auto">Ver Detalle</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Pelicula -->
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                                    <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Cine</span>
-                                    <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Pelicula 2">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title fw-bold text-truncate">Misterio en la Noche</h5>
-                                        <p class="card-text text-secondary small mb-2">Suspenso / Thriller</p>
-                                        <div class="d-flex justify-content-between align-items-center small mb-3">
-                                            <span><i class="bi bi-clock text-danger"></i> 1 hora y 50 mins</span>
-                                            <span class="badge bg-dark border border-secondary text-warning">⭐ 4.5</span>
-                                        </div>
-                                        <a href="detalle.html" class="btn btn-outline-danger w-100 mt-auto">Ver Detalle</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Obra de Teatro -->
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                                    <span class="position-absolute top-0 start-0 m-2 badge bg-primary">Teatro</span>
-                                    <img src="https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Teatro 1">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title fw-bold text-truncate">Hamlet Clásico</h5>
-                                        <p class="card-text text-secondary small mb-2">Drama Teatral</p>
-                                        <div class="d-flex justify-content-between align-items-center small mb-3">
-                                            <span><i class="bi bi-clock text-primary"></i> 2 horas</span>
-                                            <span class="badge bg-dark border border-secondary text-warning">⭐ 4.9</span>
-                                        </div>
-                                        <a href="detalle.html" class="btn btn-outline-primary w-100 mt-auto">Ver Detalle</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 4: Obra de Teatro-->
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                                    <span class="position-absolute top-0 start-0 m-2 badge bg-primary">Teatro</span>
-                                    <img src="https://images.unsplash.com/photo-1503095396549-807759245b35?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Teatro 2">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title fw-bold text-truncate">Noche de Comedia</h5>
-                                        <p class="card-text text-secondary small mb-2">Comedia / Improv</p>
-                                        <div class="d-flex justify-content-between align-items-center small mb-3">
-                                            <span><i class="bi bi-clock text-primary"></i> 1 hora y 30 mins</span>
-                                            <span class="badge bg-dark border border-secondary text-warning">⭐ 4.6</span>
-                                        </div>
-                                        <a href="detalle.html" class="btn btn-outline-primary w-100 mt-auto">Ver Detalle</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                </main>
-            <footer class="bg-black text-secondary py-4 border-top border-secondary mt-5">
-                <div class="container text-center">
-                    <p class="mb-0">&copy; 2026 Cine & Teatro - Prototipo de Web Interactivo</p>
-                </div>
-            </footer>
-
-            <!-- Bootstrap 5.3 JavaScript Bundle (Incluye Popper para modales y dropdowns) -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Destacados -->
+        <section class="mb-5">
+            <h2 class="h3 fw-bold mb-3 border-start border-4 border-danger ps-2">Estrenos Destacados</h2>
             
-            <!-- JavaScript Principal -->
-            <script src="js/app.js"></script>
+            <div id="carruselDestacados" class="carousel slide shadow-lg rounded-3 overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="1"></button>
+                </div>
 
-            <!-- Datos de Peliculas & Obras -->
-            <script src="js/datos.js"></script>
-    </body>
+                <div class="carousel-inner">
+                    <div class="carousel-item active" data-bs-interval="4000">
+                        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 380px;" alt="Cine">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
+                            <span class="badge bg-warning text-dark">Estreno de Cine</span>
+                            <h3 class="fw-bold">Sci-Fi Odyssey 2026</h3>
+                            <p class="mb-1">Una aventura intergaláctica sin precedentes en formato IMAX.</p>
+                            <a href="detalle.html" class="btn btn-danger btn-sm">Ver Funciones</a>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item" data-bs-interval="4000">
+                        <img src="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=1200&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 380px;" alt="Teatro">
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
+                            <span class="badge bg-primary">Gran Obra de Teatro</span>
+                            <h3 class="fw-bold">El Fantasma de la Ópera</h3>
+                            <p class="mb-1">La obra clásica vuelve al escenario principal en vivo.</p>
+                            <a href="detalle.html" class="btn btn-primary btn-sm">Reservar Butacas</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carruselDestacados" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carruselDestacados" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- En Cartelera -->
+        <section>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h3 fw-bold mb-0 border-start border-4 border-danger ps-2">En Cartelera</h2>
+                <a href="peliculas.html" class="btn btn-link text-danger text-decoration-none fw-semibold">
+                    Ver Catálogo Completo <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="row g-4">
+                <!-- Card 1 -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Cine</span>
+                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Película 1">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate">Inception Matrix</h5>
+                            <p class="card-text text-secondary small mb-2">Acción / Ciencia Ficción</p>
+                            <div class="d-flex justify-content-between align-items-center small mb-3">
+                                <span><i class="bi bi-clock text-danger"></i> 2h 46min</span>
+                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.8</span>
+                            </div>
+                            <a href="detalle.html" class="btn btn-outline-danger w-100 mt-auto">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Cine</span>
+                        <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Película 2">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate">Misterio en la Noche</h5>
+                            <p class="card-text text-secondary small mb-2">Suspenso / Thriller</p>
+                            <div class="d-flex justify-content-between align-items-center small mb-3">
+                                <span><i class="bi bi-clock text-danger"></i> 1h 50min</span>
+                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.5</span>
+                            </div>
+                            <a href="detalle.html" class="btn btn-outline-danger w-100 mt-auto">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-primary">Teatro</span>
+                        <img src="https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Teatro 1">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate">Hamlet Clásico</h5>
+                            <p class="card-text text-secondary small mb-2">Drama Teatral</p>
+                            <div class="d-flex justify-content-between align-items-center small mb-3">
+                                <span><i class="bi bi-clock text-primary"></i> 2h</span>
+                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.9</span>
+                            </div>
+                            <a href="detalle.html" class="btn btn-outline-primary w-100 mt-auto">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-primary">Teatro</span>
+                        <img src="https://images.unsplash.com/photo-1503095396549-807759245b35?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Teatro 2">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate">Noche de Comedia</h5>
+                            <p class="card-text text-secondary small mb-2">Comedia / Improv</p>
+                            <div class="d-flex justify-content-between align-items-center small mb-3">
+                                <span><i class="bi bi-clock text-primary"></i> 1h 30min</span>
+                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.6</span>
+                            </div>
+                            <a href="detalle.html" class="btn btn-outline-primary w-100 mt-auto">Ver Detalle</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-secondary py-4 border-top border-secondary mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 Cine & Teatro - Prototipo de Web Interactivo</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
 </html>
