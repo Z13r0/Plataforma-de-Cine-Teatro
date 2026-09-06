@@ -7,23 +7,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function actualizarNavbar() {
   const authArea = document.getElementById("authArea");
-
-  // Si la página no tiene el contenedor, no hacemos nada
   if (!authArea) return;
 
-  const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+  let usuarioActual = null;
+
+  try {
+    const data = localStorage.getItem("usuarioActual");
+    if (data) {
+      usuarioActual = JSON.parse(data);
+    }
+  } catch (error) {
+    console.error("Error al leer la sesión:", error);
+    localStorage.removeItem("usuarioActual");
+  }
 
   if (usuarioActual) {
     // Usuario logueado
+    const primerNombre = usuarioActual.nombre ? usuarioActual.nombre.split(" ")[0] : "Usuario";
+    const esAdmin = usuarioActual.rol === "admin";
+
     authArea.innerHTML = `
       <a href="entradas.html" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
         <i class="bi bi-ticket-perforated"></i> Mis Entradas
       </a>
-      
-      <span class="text-light small">
-        Hola, <strong>${usuarioActual.nombre.split(" ")[0]}</strong>
-      </span>
-      
+
+      <a href="perfil.html" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
+        <i class="bi bi-person-circle"></i> Perfil
+      </a>
+
+      ${esAdmin ? `
+        <a href="admin.html" class="btn btn-warning btn-sm d-flex align-items-center gap-1">
+          <i class="bi bi-shield-lock"></i> Admin
+        </a>
+      ` : ""}
+
       <button onclick="cerrarSesion()" class="btn btn-outline-danger btn-sm">
         <i class="bi bi-box-arrow-right"></i> Salir
       </button>
@@ -31,11 +48,7 @@ function actualizarNavbar() {
   } else {
     // No hay sesión
     authArea.innerHTML = `
-      <a href="entradas.html" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1">
-        <i class="bi bi-ticket-perforated"></i> Mis Entradas
-      </a>
-      
-      <a href="login.html" class="btn btn-danger btn-sm">
+      <a href="login.html" class="btn btn-danger btn-sm d-flex align-items-center gap-1">
         <i class="bi bi-person-fill"></i> Iniciar Sesión
       </a>
     `;

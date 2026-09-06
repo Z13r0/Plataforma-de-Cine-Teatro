@@ -1,79 +1,100 @@
-document.addEventListener("DOMContentLoaded", () =>{
-    cargarSelectContenidos();
-    mostrarComentario();
+// ======================================================
+// js/comunidad.js
+// ======================================================
 
-    const form = document.getElementById("formComentario");
-    if (form) {
-        form.addEventListener("submit", guardarComentario);
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  cargarSelectContenidos();
+  mostrarComentarios();          // ← corregido (antes estaba mal escrito)
+  rellenarNombreSiHaySesion();
+
+  const form = document.getElementById("formComentario");
+  if (form) {
+    form.addEventListener("submit", guardarComentario);
+  }
 });
 
-// Llena el select con peliculas y obras de la pagina
+// Llena el select con películas y obras
 function cargarSelectContenidos() {
-    const select = document.getElementById("contenidoSeleccionado");
-    if (!select) return;
+  const select = document.getElementById("contenidoSeleccionado");
+  if (!select) return;
 
-    // Agregamos las pelis al select
-    DB.peliculas.forEach((peli) => {
-        const option = document.createElement("option");
-        option.value = `cine-${peli.id}`;
-        option.textContent = `🎬 ${peli.titulo}`;
-        select.appendChild(option);
-    });
+  // Películas
+  (DB.peliculas || []).forEach((peli) => {
+    const option = document.createElement("option");
+    option.value = `cine-${peli.id}`;
+    option.textContent = `🎬 ${peli.titulo}`;
+    select.appendChild(option);
+  });
 
+  // Obras
+  (DB.obras || []).forEach((obra) => {
+    const option = document.createElement("option");
+    option.value = `teatro-${obra.id}`;
+    option.textContent = `🎭 ${obra.titulo}`;
+    select.appendChild(option);
+  });
 
-    // Agregamos las obras
-    DB.obras.forEach((obra) => {
-        const option = document.createElement("option");
-        option.value = `teatro-${obra.id}`;
-        option.textContent = `🎭 ${obra.titulo}`;
-        select.appendChild(option);
-    });    
+  // Contenido agregado por el admin
+  const contenidoAdmin = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
+  contenidoAdmin.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = `${item.tipo}-${item.id}`;
+    option.textContent = `${item.tipo === "cine" ? "🎬" : "🎭"} ${item.titulo}`;
+    select.appendChild(option);
+  });
 }
 
-// Funcion que guarda un nuevo comentario
-function guardarComentario(e) {
-    e.preventDefault();
+// Si hay sesión, rellena automáticamente el nombre
+function rellenarNombreSiHaySesion() {
+  const inputNombre = document.getElementById("nombreUsuario");
+  if (!inputNombre) return;
 
-    const nombre = document.getElementById("nombreUsuario").value.trim();
-    const contenido = document.getElementById("contenidoSeleccionado").value;
-    const valoracion = document.getElementById("valoracion").value;
-    const texto = document.getElementById("textoComentario").value.trim();
-
-    if (!nombre || !contenido || !texto) {
-        alert("Por favor completa todos los campos..")
-        return;
+  try {
+    const usuario = JSON.parse(localStorage.getItem("usuarioActual"));
+    if (usuario && usuario.nombre) {
+      inputNombre.value = usuario.nombre;
+      inputNombre.readOnly = true; // opcional: no dejar cambiarlo
     }
-
-    // Creamos el objeto del comentario
-    const comentario = {
-        id: Date.now(),
-        nombre: nombre,
-        contenido: contenido,
-        valoracion: Number(valoracion),
-        texto: texto,
-        fecha: new Date().toLocaleString("es-CL")
-    };
-
-        // Recuperamos comentarios anteriores
-    const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
-
-    // Agregamos el nuevo al principio
-    comentarios.unshift(comentario);
-
-    // Guardamos de nuevo
-    localStorage.setItem("comentarios", JSON.stringify(comentarios));
-
-    // Limpiamos el formulario
-    document.getElementById("formComentario").reset();
-
-    // Actualizamos la lista
-    mostrarComentarios();
-
-    alert("¡Comentario publicado correctamente!");   
+  } catch (e) {}
 }
 
-// Funcion que muestra los comentarios
+// Guardar nuevo comentario
+function guardarComentario(e) {
+  e.preventDefault();
+
+  const nombre = document.getElementById("nombreUsuario").value.trim();
+  const contenido = document.getElementById("contenidoSeleccionado").value;
+  const valoracion = document.getElementById("valoracion").value;
+  const texto = document.getElementById("textoComentario").value.trim();
+
+  if (!nombre || !contenido || !texto) {
+    alert("Por favor completa todos los campos.");
+    return;
+  }
+
+  const comentario = {
+    id: Date.now(),
+    nombre: nombre,
+    contenido: contenido,
+    valoracion: Number(valoracion),
+    texto: texto,
+    fecha: new Date().toLocaleString("es-CL")
+  };
+
+  const comentarios = JSON.parse(localStorage.getItem("comentarios")) || [];
+  comentarios.unshift(comentario); // más reciente primero
+  localStorage.setItem("comentarios", JSON.stringify(comentarios));
+
+  // Limpiar solo el texto y la valoración (dejamos el nombre)
+  document.getElementById("textoComentario").value = "";
+  document.getElementById("valoracion").value = "5";
+  document.getElementById("contenidoSeleccionado").value = "";
+
+  mostrarComentarios();
+  alert("¡Comentario publicado correctamente!");
+}
+
+// Mostrar los comentarios
 function mostrarComentarios() {
   const contenedor = document.getElementById("listaComentarios");
   if (!contenedor) return;
@@ -87,10 +108,11 @@ function mostrarComentarios() {
       </div>`;
     return;
   }
+
   contenedor.innerHTML = "";
 
   comentarios.forEach((com) => {
-    // Generamos las estrellas
+    // Estrellas
     let estrellas = "";
     for (let i = 1; i <= 5; i++) {
       estrellas += i <= com.valoracion
@@ -98,15 +120,23 @@ function mostrarComentarios() {
         : `<i class="bi bi-star text-secondary"></i>`;
     }
 
-    // Nombre del contenido
+    // Título del contenido
     const [tipo, id] = com.contenido.split("-");
     let tituloContenido = "Contenido";
+
     if (tipo === "cine") {
-      const peli = DB.peliculas.find(p => p.id === Number(id));
+      const peli = (DB.peliculas || []).find(p => p.id === Number(id));
       tituloContenido = peli ? peli.titulo : "Película";
-    } else {
-      const obra = DB.obras.find(o => o.id === Number(id));
+    } else if (tipo === "teatro") {
+      const obra = (DB.obras || []).find(o => o.id === Number(id));
       tituloContenido = obra ? obra.titulo : "Obra";
+    }
+
+    // También buscar en contenido del admin
+    if (tituloContenido === "Película" || tituloContenido === "Obra") {
+      const admin = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
+      const encontrado = admin.find(c => c.id === Number(id));
+      if (encontrado) tituloContenido = encontrado.titulo;
     }
 
     const tarjeta = `
