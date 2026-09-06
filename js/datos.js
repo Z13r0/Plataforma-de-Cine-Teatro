@@ -187,11 +187,35 @@ const DB = {
 
     // 4. Funcionciones (Sirve para conectar los contenidos, salas, fecha y hora)
     funciones: [
-        { id: 1, contenidoId: 1, tipo: "cine", salaId: "S1", fecha: "2023-11-20", hora: "18:00" },
-        { id: 2, contenidoId: 2, tipo: "cine", salaId: "S2", fecha: "2023-11-20", hora: "21:30"},
-        { id: 3, contenidoId: 3, tipo: "teatro", salaId: "ST", fecha: "2023-11-21", hora: "20:00" },
-        { id: 4, contenidoId: 4, tipo: "cine", salaId: "S3", fecha: "2023-11-22", hora: "19:15" }
-    ]
+        // ===== FUNCIONES DE CINE =====
+        { id: 1, contenidoId: 1, tipo: "cine", salaId: "S1", fecha: "2026-09-10", hora: "16:30" },
+        { id: 2, contenidoId: 1, tipo: "cine", salaId: "S1", fecha: "2026-09-10", hora: "19:00" },
+        { id: 3, contenidoId: 1, tipo: "cine", salaId: "S2", fecha: "2026-09-10", hora: "21:45" },
+
+        { id: 4, contenidoId: 2, tipo: "cine", salaId: "S2", fecha: "2026-09-11", hora: "17:00" },
+        { id: 5, contenidoId: 2, tipo: "cine", salaId: "S3", fecha: "2026-09-11", hora: "20:15" },
+
+        { id: 6, contenidoId: 3, tipo: "cine", salaId: "S1", fecha: "2026-09-12", hora: "18:00" },
+        { id: 7, contenidoId: 3, tipo: "cine", salaId: "S1", fecha: "2026-09-12", hora: "21:00" },
+
+        { id: 8, contenidoId: 4, tipo: "cine", salaId: "S3", fecha: "2026-09-10", hora: "19:30" },
+        { id: 9, contenidoId: 5, tipo: "cine", salaId: "S2", fecha: "2026-09-11", hora: "16:00" },
+        { id: 10, contenidoId: 6, tipo: "cine", salaId: "S1", fecha: "2026-09-12", hora: "20:00" },
+
+        // ===== FUNCIONES DE TEATRO =====
+        // Hamlet Clásico (id: 101)
+        { id: 11, contenidoId: 101, tipo: "teatro", salaId: "ST", fecha: "2026-09-10", hora: "19:00" },
+        { id: 12, contenidoId: 101, tipo: "teatro", salaId: "ST", fecha: "2026-09-10", hora: "21:30" },
+
+        // Noche de Comedia (id: 102)
+        { id: 13, contenidoId: 102, tipo: "teatro", salaId: "ST", fecha: "2026-09-11", hora: "18:30" },
+        { id: 14, contenidoId: 102, tipo: "teatro", salaId: "ST", fecha: "2026-09-11", hora: "21:00" },
+
+        // El Fantasma de la Ópera (id: 103)
+        { id: 15, contenidoId: 103, tipo: "teatro", salaId: "ST", fecha: "2026-09-12", hora: "17:00" },
+        { id: 16, contenidoId: 103, tipo: "teatro", salaId: "ST", fecha: "2026-09-12", hora: "20:15" },
+        { id: 17, contenidoId: 103, tipo: "teatro", salaId: "ST", fecha: "2026-09-13", hora: "19:30" }
+        ]
 };
 
 // Comprobación a través de la consola

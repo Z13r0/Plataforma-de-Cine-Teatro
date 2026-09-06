@@ -1,169 +1,161 @@
-// Esta funcion espera a que el codigo html de la pagina este completamente cargado y listo antes de encenderse.
+// Archivo: js/peliculas.js
+// Versión corregida - Formato cartelera
+
 document.addEventListener("DOMContentLoaded", () => {
-    mostrarPeliculas();
+  // Mostramos todas las películas al cargar la página
+  mostrarPeliculas();
 
-    // Permite capturar elementos de la interfaz
-    const inputBuscador = document.getElementById("inputBuscador");
-    const selectGenero = document.getElementById("selectGenero");
-    const selectClasificacion = document.getElementById("selectClasificacion");
+  // Activamos los filtros
+  const inputBuscador = document.getElementById("inputBuscador");
+  const selectGenero = document.getElementById("selectGenero");
+  const selectClasificacion = document.getElementById("selectClasificacion");
 
-    // Asigna a los 'escuchadores de eventos' para actualizar el catalago en tiempo real
-    if (inputBuscador) inputBuscador.addEventListener("input", aplicarFiltros);
-    if (selectGenero) selectGenero.addEventListener("change", aplicarFiltros);
-    if (selectClasificacion) selectClasificacion.addEventListener("change", aplicarFiltros);
-
+  if (inputBuscador) inputBuscador.addEventListener("input", aplicarFiltros);
+  if (selectGenero) selectGenero.addEventListener("change", aplicarFiltros);
+  if (selectClasificacion) selectClasificacion.addEventListener("change", aplicarFiltros);
 });
 
-// Funcion que permite asignar un color al badge/boton segun la clasificación
+// Devuelve el color del badge según la clasificación
 function obtenerColorClasificacion(clasificacion) {
-    switch (clasificacion) {
-        case "TE":
-            return "bg-success";    // Color Verde
-        case "TE+7":
-            return "bg-info text-dark";     // Color Celeste (Categoria +7 años)
-        case "+14":
-            return "bg-warning text-dark";      // Amarillo (Categoria +14 años)
-        case "+18":
-            return "bg-danger";     // Rojo (Categoria +18 años)
-        default:
-            return "bg-secondary";
-    }
+  switch (clasificacion) {
+    case "TE":
+      return "bg-success";
+    case "TE+7":
+      return "bg-info text-dark";
+    case "+14":
+      return "bg-warning text-dark";
+    case "+18":
+      return "bg-danger";
+    default:
+      return "bg-secondary";
+  }
 }
 
-// Funcion encargada de renderizar el catalago dinamico
+// Dibuja las películas en formato cartelera
 function mostrarPeliculas(listaPeliculas = DB.peliculas) {
-    
-    // Nos permite obtener la referencia del contenedor html por su id
-    const contenedor = document.getElementById("contenedorPeliculas");
+  const contenedor = document.getElementById("contenedorPeliculas");
 
-    // Verifica si el contenedor existe dentro de la pagina actual
-    if (!contenedor) return;
+  // Si no existe el contenedor, salimos
+  if (!contenedor) {
+    console.error("No se encontró el contenedor #contenedorPeliculas");
+    return;
+  }
 
-    // Nos limpia el contenido del contenedor por seguridad
-    contenedor.innerHTML = "";
+  // Limpiamos el contenedor
+  contenedor.innerHTML = "";
 
-    // Envia un Mensaje en caso de que ningun elemento coincida
-    if (listaPeliculas.length === 0) {
-        contenedor.innerHTML = `
-        <div class="col-12 text-center text-white py-5">
-            <p class="fs-5">No se encontraron películas que coincidan con la búsqueda.</p>
-        </div>`;
-        return;
+  // Si no hay películas
+  if (!listaPeliculas || listaPeliculas.length === 0) {
+    contenedor.innerHTML = `
+      <div class="text-center text-white py-5">
+        <p class="fs-5">No se encontraron películas que coincidan con la búsqueda.</p>
+      </div>`;
+    return;
+  }
+
+  // Recorremos cada película
+  listaPeliculas.forEach((pelicula) => {
+    // Buscamos las funciones de esta película
+    const funcionesPelicula = DB.funciones.filter(
+      (funcion) =>
+        Number(funcion.contenidoId) === Number(pelicula.id) &&
+        funcion.tipo === "cine"
+    );
+
+    // Creamos los botones de horario
+    let botonesHorarios = "";
+    if (funcionesPelicula.length > 0) {
+      botonesHorarios = funcionesPelicula
+        .map((funcion) => {
+          return `
+            <a href="funciones.html?id=${pelicula.id}&tipo=cine" 
+               class="btn btn-outline-danger btn-sm">
+              ${funcion.hora}
+            </a>`;
+        })
+        .join("");
+    } else {
+      botonesHorarios = `<span class="text-secondary small">Sin funciones disponibles</span>`;
     }
 
-    // Recorre DB.peliculas
-    listaPeliculas.forEach(pelicula => {
+    // Color del badge
+    const colorBadge = obtenerColorClasificacion(pelicula.clasificacion);
 
-        // Se obtiene la clase de colores segun la edad de la pelicula
-        const colorBadge = obtenerColorClasificacion(pelicula.clasificacion);
+    // Creamos la tarjeta en formato cartelera
+    const tarjeta = `
+      <div class="card bg-black border-secondary overflow-hidden">
+        <div class="row g-0 align-items-center">
+          
+          <!-- Imagen -->
+          <div class="col-12 col-md-4 col-lg-3">
+            <img src="${pelicula.imagen}" 
+                 alt="${pelicula.titulo}"
+                 class="img-fluid w-100"
+                 style="height: 230px; object-fit: cover;">
+          </div>
 
-       // Buscamos todas las funciones que pertenecen
-        // a la película actual.
-        const funcionesPelicula = DB.funciones.filter(
-            funcion =>
-                Number(funcion.contenidoId) === Number(pelicula.id) &&
-                funcion.tipo === "cine"
-        );
+          <!-- Información -->
+          <div class="col-12 col-md-8 col-lg-9">
+            <div class="card-body p-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+              
+              <div>
+                <span class="badge ${colorBadge} mb-2">${pelicula.clasificacion}</span>
+                <span class="badge bg-secondary mb-2 ms-1">${pelicula.genero}</span>
+                
+                <h3 class="card-title fw-bold mb-1">${pelicula.titulo}</h3>
+                
+                <p class="text-secondary small mb-2">
+                  <i class="bi bi-clock me-1"></i>${pelicula.duracion}
+                </p>
+                
+                <p class="card-text text-light opacity-75 small mb-0" style="max-width: 520px;">
+                  ${pelicula.sinopsis}
+                </p>
+              </div>
 
-
-        // ======================================================
-        // CREAR BOTONES DE HORARIOS
-        // ======================================================
-
-        // Convertimos cada función en un botón.
-        const botonesHorarios = funcionesPelicula.map(funcion => {
-
-            return `
-                <a
-                    href="butacas.html?id=${pelicula.id}&tipo=cine&funcionId=${funcion.id}&hora=${encodeURIComponent(funcion.hora)}"
-                    class="btn btn-outline-danger btn-sm"
-                >
-                    ${funcion.hora}
+              <!-- Horarios + Botón detalle -->
+              <div class="text-lg-end">
+                <span class="d-block text-secondary small mb-2 fw-semibold">Horarios disponibles:</span>
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end mb-3">
+                  ${botonesHorarios}
+                </div>
+                
+                <a href="detalle.html?id=${pelicula.id}&tipo=cine" class="btn btn-danger btn-sm">
+                  Ver detalle
                 </a>
-            `;
+              </div>
 
-        }).join("");
+            </div>
+          </div>
 
-        // Estructura de la Card con clases de Bootstrap Grid para responsive design
-        const cardHTML = `
-            <div class="card bg-black text-light border-secondary shadow rounded-3 overflow-hidden mb-4">
-                <div class="row g-0 align-items-center">
+        </div>
+      </div>
+    `;
 
-                <!-- Imagen / Poster de la pelicula -->
-                <div class="col12 col-md-4 col-lg-3">
-                    <img src= "${pelicula.imagen}" class="img-fluid w-100 h-100 object-fit-cover" alt="${pelicula.titulo}" style="min-height: 220px; max-height: 250px;">
-                </div>
-
-                <!-- Información y Horarios de Peliculas -->
-                <div class="col-12 col-md-8 col-lg-9">
-                    <div class="card-body p-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-
-                <!-- Detalles Pelicula -->
-                <div>
-                    <div class="d-flex align-item-center gap-2 mb-2 flex-warp">
-                        <span class="badge bg-danger">${pelicula.genero}</span>
-                        <span class="badge ${colorBadge}">${pelicula.clasificacion}</span>
-                        <span class="text-warning small fw-bold"><i class="bi bi-star-fill me-1"></i>${pelicula.valoracion}</span>
-                    </div>
-                    <h3 class="card-title fw-bold mb-1">${pelicula.titulo}</h3>
-                    <p class="text-secondary small mb-2">
-                        <i class="bi bi-clock me-1""></i>Duración: ${pelicula.duracion || '120 min'} | Sala IMAX
-                    </p>
-                    <p class="card-text text-light opacity-75 small b-0" style="max-width: 500px;">${pelicula.sinopsis}</p>
-                </div>
-
-                <!-- Horarios disponibles -->
-                <div class="text-lg-end">
-
-                    <span class="d-block text-secondary small mb-2">
-                        Horarios Disponibles:
-                    </span>
-
-                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-
-                        ${
-
-                            botonesHorarios !== ""
-
-                                ? botonesHorarios
-
-                                : `<span class="text-secondary small">
-                                    No hay funciones disponibles
-                                </span>`
-
-                        }
-
-                    </div>
-
-                </div>
-        `;
-    
-        // Nos agrega la tarjeta al contenedor HTML
-        contenedor.innerHTML += cardHTML;
-    });
+    // Agregamos la tarjeta al contenedor
+    contenedor.innerHTML += tarjeta;
+  });
 }
 
-
-// Esta funcion lee los valores ingresados y los filtra en la Base de datos de peliculas (DB.peliculas)
-
+// Función de filtros
 function aplicarFiltros() {
-    const texto = document.getElementById("inputBuscador")?.value.toLowerCase().trim() || "";
-    const genero = document.getElementById("selectGenero")?.value || "";
-    const clasificacion = document.getElementById("selectClasificacion")?.value || "";
+  const texto = document.getElementById("inputBuscador")?.value.toLowerCase().trim() || "";
+  const genero = document.getElementById("selectGenero")?.value || "";
+  const clasificacion = document.getElementById("selectClasificacion")?.value || "";
 
-    const resultados = DB.peliculas.filter(pelicula => {
-        // Filtro x texto en Titulo o Sinopsis
-        const coincideTexto = pelicula.titulo.toLowerCase().includes(texto) || pelicula.sinopsis.toLowerCase().includes(texto);
+  const resultados = DB.peliculas.filter((pelicula) => {
+    const coincideTexto =
+      pelicula.titulo.toLowerCase().includes(texto) ||
+      pelicula.sinopsis.toLowerCase().includes(texto);
 
-        // Filtro x Genero
-        const coincideGenero = genero === "" || pelicula.genero.toLowerCase().includes(genero.toLowerCase());
+    const coincideGenero =
+      genero === "" || pelicula.genero.toLowerCase().includes(genero.toLowerCase());
 
-        // Filtro x Coincidencia
-        const coincideClasificacion = clasificacion === "" || pelicula.clasificacion === clasificacion;
+    const coincideClasificacion =
+      clasificacion === "" || pelicula.clasificacion === clasificacion;
 
-        return coincideTexto && coincideGenero && coincideClasificacion;
-    })
+    return coincideTexto && coincideGenero && coincideClasificacion;
+  });
 
-    // Se vuelve a renderizar la "Grilla" con los resultados filtrados
-    mostrarPeliculas(resultados);
+  mostrarPeliculas(resultados);
 }

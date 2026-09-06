@@ -17,34 +17,60 @@
 
   <main class="container py-5">
 
-    <h1 class="fw-bold text-center">Selección de Butacas</h1>
+    <!-- Boton para volver a la pagina anterior-->
+    <div class="mb-3">
+      <button onclick="window.history.back()" class="btn btn-outline-light btn-sm">
+        <i class="bi bi-arrow-left"></i> Volver
+      </button>
+    </div>
 
-    <p id="tituloSeleccion" class="text-center fs-4"></p>
+    <!-- Título y detalles de la función -->
+    <div class="text-center mb-4">
+      <h1 class="fw-bold">Selección de Butacas</h1>
+      <p id="tituloSeleccion" class="fs-4 text-danger mb-1"></p>
+      <p id="detallesFuncion" class="text-secondary"></p>
+    </div>
 
-    <p id="detallesFuncion" class="text-center text-secondary"></p>
-
-    <div class="text-center my-4">
-      <div class="bg-secondary rounded p-2 mx-auto" style="max-width: 500px;">
+    <!-- Representación de la pantalla del cine -->
+    <div class="text-center mb-4">
+      <div class="bg-secondary rounded py-2 mx-auto text-dark fw-bold" style="max-width: 480px;">
         PANTALLA
       </div>
     </div>
 
-    <div id="contenedorButacas" class="d-flex flex-wrap justify-content-center gap-2 mx-auto" style="max-width: 600px;"></div>
+    <!-- Aquí se generarán las butacas con JavaScript -->
+    <div id="contenedorButacas" class="d-flex flex-column align-items-center gap-2 mb-4">
+      <!-- Las filas se crearán dinámicamente -->
+    </div>
 
-    <div class="text-center mt-4">
+    <!-- Leyenda de colores -->
+    <div class="d-flex justify-content-center gap-4 mb-4 flex-wrap">
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn btn-outline-light btn-sm" style="width:40px; pointer-events:none;">1</div>
+        <span class="small">Disponible</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn btn-danger btn-sm" style="width:40px; pointer-events:none;">1</div>
+        <span class="small">Seleccionada</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="btn btn-secondary btn-sm" style="width:40px; pointer-events:none;" disabled>1</div>
+        <span class="small">Ocupada</span>
+      </div>
+    </div>
 
-      <p>
+    <!-- Resumen de selección -->
+    <div class="text-center">
+      <p class="mb-1">
         Butacas seleccionadas: <strong id="cantidadSeleccionadas">0</strong>
       </p>
-
-      <p class="fs-4">
+      <p class="fs-4 mb-3">
         Total: <strong class="text-success">$<span id="total">0</span></strong>
       </p>
 
-      <button id="btnContinuar" class="btn btn-danger btn-lg">
-        Continuar
+      <button id="btnContinuar" class="btn btn-danger btn-lg px-5">
+        Continuar a la compra
       </button>
-
     </div>
 
   </main>

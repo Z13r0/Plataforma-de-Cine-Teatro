@@ -37,17 +37,24 @@
     </header>
 
     <main class="container py-4">
-        <!-- Titulo-->
-        <h1 class="h2 fw-bold mb-4 border-start border-4 border-danger ps-2">Catálogo de Películas</h1>
-        
+
+        <!-- Botón para volver a la página anterior -->
+        <div class="mb-3">
+        <button onclick="window.history.back()" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-arrow-left"></i> Volver
+        </button>
+        </div>
+
+        <!-- Titulo -->
+        <h1 class="h2 fw-bold mb-4 border-start border-4 border-danger ps-2">
+            Cartelera de Películas
+        </h1>
+
         <!-- Buscador y filtros -->
         <div class="row g-3 mb-4 p-3 bg-secondary bg-opacity-25 rounded">
-
-            <!-- Buscador por Texto -->
             <div class="col-12 col-md-6">
-                <input type="text" id="inputBuscador" class="form-control bg-dark text-white border-secondary" placeholder="Buscar por Titulo...">
+                <input type="text" id="inputBuscador" class="form-control bg-dark text-white border-secondary" placeholder="Buscar por título...">
             </div>
-            <!-- Buscador por Genero -->
             <div class="col-12 col-sm-6 col-md-3">
                 <select id="selectGenero" class="form-select bg-dark text-white border-secondary">
                     <option value="">Todos los géneros</option>
@@ -55,26 +62,25 @@
                     <option value="Comedia">Comedia</option>
                     <option value="Terror">Terror</option>
                     <option value="Romance">Romance</option>
-                    <option value="aventura">Aventura</option>
                     <option value="Suspenso">Suspenso</option>
+                    <option value="Ciencia Ficción">Ciencia Ficción</option>
                 </select>
             </div>
-
-            <!-- Filtro de Clasificación -->
             <div class="col-12 col-sm-6 col-md-3">
                 <select id="selectClasificacion" class="form-select bg-dark text-white border-secondary">
                     <option value="">Todas las clasificaciones</option>
-                    <option value="TE">TE (Todo publico)</option>
+                    <option value="TE">TE</option>
                     <option value="TE+7">TE+7</option>
-                    <option value="TE+14">+14</option>
+                    <option value="+14">+14</option>
                     <option value="+18">+18</option>
                 </select>
             </div>
         </div>
 
-        <!-- Contenedor de las Tarjetas (JS dibujara las peliculas)-->
-
-        <div class="row g-4" id="contenedorPeliculas"></div>
+        <!-- Aquí se dibujarán las películas en formato cartelera -->
+        <div id="contenedorPeliculas" class="d-flex flex-column gap-4">
+            <!-- Las tarjetas se generarán con JavaScript -->
+        </div>
     </main>
 
     <footer class="bg-black text-secondary py-4 border-top border-secondary mt-5">
