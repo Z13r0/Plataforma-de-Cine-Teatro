@@ -57,14 +57,32 @@ function mostrarPeliculas(listaPeliculas = DB.peliculas) {
         // Se obtiene la clase de colores segun la edad de la pelicula
         const colorBadge = obtenerColorClasificacion(pelicula.clasificacion);
 
-        // Permite renderizar los horarios de las peliculas
-        const horarios = pelicula.horarios || ["18:00 hrs", "20:30 hrs", "22:15 hrs"];
+       // Buscamos todas las funciones que pertenecen
+        // a la película actual.
+        const funcionesPelicula = DB.funciones.filter(
+            funcion =>
+                Number(funcion.contenidoId) === Number(pelicula.id) &&
+                funcion.tipo === "cine"
+        );
 
-        // Renderiza los botones con los horarios de las peliculas
-        // Corregir 
-        const botonesHorarios = horarios.map(hora =>
-            '<a href="butacas.html?peliculaId=${pelicula.id}&hora=${encodeURIComponent(hora)}" class="btn btn-outline-danger btn-sm">${hora}</a>'
-        ).join("");
+
+        // ======================================================
+        // CREAR BOTONES DE HORARIOS
+        // ======================================================
+
+        // Convertimos cada función en un botón.
+        const botonesHorarios = funcionesPelicula.map(funcion => {
+
+            return `
+                <a
+                    href="butacas.html?id=${pelicula.id}&tipo=cine&funcionId=${funcion.id}&hora=${encodeURIComponent(funcion.hora)}"
+                    class="btn btn-outline-danger btn-sm"
+                >
+                    ${funcion.hora}
+                </a>
+            `;
+
+        }).join("");
 
         // Estructura de la Card con clases de Bootstrap Grid para responsive design
         const cardHTML = `
@@ -94,14 +112,30 @@ function mostrarPeliculas(listaPeliculas = DB.peliculas) {
                     <p class="card-text text-light opacity-75 small b-0" style="max-width: 500px;">${pelicula.sinopsis}</p>
                 </div>
 
-                <!-- Botones de Horarios Disponibles -->
+                <!-- Horarios disponibles -->
                 <div class="text-lg-end">
-                    <span class="d-block text-secondary small mb-2 fw-semibol">Horarios Disponibles:</span>
-                        <div class="d-flex flex-warp gap-2 justify-content-lg-end">${botonesHorarios}</div>
-                        </div>
-                </div> 
-            </div>
-        </div>
+
+                    <span class="d-block text-secondary small mb-2">
+                        Horarios Disponibles:
+                    </span>
+
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+
+                        ${
+
+                            botonesHorarios !== ""
+
+                                ? botonesHorarios
+
+                                : `<span class="text-secondary small">
+                                    No hay funciones disponibles
+                                </span>`
+
+                        }
+
+                    </div>
+
+                </div>
         `;
     
         // Nos agrega la tarjeta al contenedor HTML

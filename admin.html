@@ -1,0 +1,375 @@
+<!-- ==================================================
+     AGREGAR CONTENIDO
+     ================================================== -->
+
+<div class="card bg-black border-secondary mb-5">
+
+    <div class="card-body">
+
+        <h3 class="mb-4">
+
+            <i class="bi bi-film"></i>
+
+            Agregar película u obra
+
+        </h3>
+
+
+        <form id="formContenido">
+
+
+            <!-- Tipo -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Tipo
+
+                </label>
+
+                <select id="tipoContenido" class="form-select" required>
+
+                    <option value="cine">
+                        Película
+                    </option>
+
+                    <option value="teatro">
+                        Obra de teatro
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Título -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Título
+
+                </label>
+
+                <input type="text" id="tituloContenido" class="form-control" required>
+
+            </div>
+
+
+            <!-- Género -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Género
+
+                </label>
+
+                <input type="text" id="generoContenido" class="form-control" required>
+
+            </div>
+
+
+            <!-- Duración -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Duración
+
+                </label>
+
+                <input type="text" id="duracionContenido"  class="form-control" placeholder="120 min" required>
+
+            </div>
+
+
+            <!-- Clasificación -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Clasificación
+
+                </label>
+
+                <select
+                    id="clasificacionContenido"
+                    class="form-select"
+                    required
+                >
+
+                    <option value="TE">TE</option>
+                    <option value="+7">+7</option>
+                    <option value="+14">+14</option>
+                    <option value="+18">+18</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Director -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Director
+
+                </label>
+
+                <input
+                    type="text"
+                    id="directorContenido"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Reparto -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Reparto
+
+                </label>
+
+                <input
+                    type="text"
+                    id="repartoContenido"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Valoración -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Valoración
+
+                </label>
+
+                <input
+                    type="number"
+                    id="valoracionContenido"
+                    class="form-control"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="0"
+                >
+
+            </div>
+
+
+            <!-- Imagen -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    URL de imagen
+
+                </label>
+
+                <input
+                    type="url"
+                    id="imagenContenido"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Sinopsis -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Sinopsis
+
+                </label>
+
+                <textarea
+                    id="sinopsisContenido"
+                    class="form-control"
+                    rows="4"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+
+                <i class="bi bi-plus-circle"></i>
+
+                Agregar contenido
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="card bg-black border-secondary mb-5">
+
+    <div class="card-body">
+
+        <h3 class="mb-4">
+
+            <i class="bi bi-calendar-plus"></i>
+
+            Agregar función
+
+        </h3>
+
+
+        <form id="formFuncion">
+
+
+            <!-- Contenido -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Contenido
+
+                </label>
+
+                <select
+                    id="contenidoFuncion"
+                    class="form-select"
+                    required
+                ></select>
+
+            </div>
+
+
+            <!-- Tipo -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Tipo
+
+                </label>
+
+                <select id="tipoFuncion" class="form-select"required>
+                    <option value="cine">
+                        Película
+                    </option>
+                    <option value="teatro">
+                        Teatro
+                    </option>
+                </select>
+            </div>
+
+
+            <!-- Fecha -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Fecha
+
+                </label>
+
+                <input type="date" id="fechaFuncion"  class="form-control" required>
+
+            </div>
+
+
+            <!-- Hora -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Hora
+
+                </label>
+
+                <input type="time" id="horaFuncion" class="form-control" required>
+
+            </div>
+
+
+            <!-- Sala -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Sala
+                </label>
+
+                <select id="salaFuncion" class="form-select" required></select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+
+                Agregar función
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- Contenido -->
+
+<h3 class="mb-3">
+
+    Contenido administrado
+
+</h3>
+
+<div
+    id="listaContenidoAdmin"
+    class="row g-4"
+></div>
+
+
+<!-- Funciones -->
+
+<h3 class="mb-3 mt-5">
+
+    Funciones administradas
+
+</h3>
+
+<div id="listaFuncionesAdmin"></div>

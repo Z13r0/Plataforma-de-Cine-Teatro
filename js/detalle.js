@@ -1,53 +1,90 @@
-document.addEventListener("DOMContentLoaded", () =>{
+// ======================================================
+// DETALLE.JS
+// Muestra información de una película u obra.
+// ======================================================
 
-    // Obten los datos del url
-    // URLSearchParams permite leer parámetros de la URL.
+document.addEventListener("DOMContentLoaded", () => {
 
+    // Leemos los parámetros de la URL
+    //
     // Ejemplo:
     // detalle.html?id=1&tipo=cine
-    const params = new URLSearchParams(window.location.search);
 
-    // Se obtiene el ID
-    const id = parseInt(params.get(id));
+    const params =
+        new URLSearchParams(window.location.search);
 
-    // Se obtiene el tipo
-    const tipo = params.get("tipo");
+    // ID del contenido
+    const id =
+        Number(params.get("id"));
 
-    // Buscar el contenido según la BD
-    const lista = tipo === "teatro" 
-        ? DB.obras 
-        : DB.peliculas;
+    // Tipo
+    const tipo =
+        params.get("tipo");
 
-    // Busca un elemento a tráves del ID
-    const contenido = lista.find(item => item.id === id);
+    // Contenedor HTML
+    const contenedor =
+        document.getElementById("contenedorDetalle");
 
-    // Se obtiene el contenedor HTML
-    const contenedor = document.getElementById("contenedorDetalle");
 
-    // En caso de no encontrarlo
+    // CONTENIDO BASE DE LAS PELICULAS U OBRAS
+
+    const contenidoBase =
+        tipo === "teatro"
+            ? DB.obras
+            : DB.peliculas;
+
+
+    // CONTENIDO AGREGADO POR ADMIN
+
+    const contenidoAdmin =
+        JSON.parse(
+            localStorage.getItem("contenidoAdmin")
+        ) || [];
+
+
+    // Filtramos según tipo
+    const contenidoNuevo =
+        contenidoAdmin.filter(
+            item => item.tipo === tipo
+        );
+
+
+    // Unimos contenido original y nuevo
+    const contenidoCompleto = [
+        ...contenidoBase,
+        ...contenidoNuevo
+    ];
+
+
+    // Buscamos el contenido
+    const contenido =
+        contenidoCompleto.find(
+            item => Number(item.id) === id
+        );
+
+
+    // Sistema de Validación
+
     if (!contenido) {
+
         contenedor.innerHTML = `
-
             <div class="alert alert-danger">
-
-                No se encontró la película u obra.
-
+                No se encontró el contenido.
             </div>
-
         `;
-        return;
-    } 
 
-    // Muestra la información
+        return;
+    }
+
+
+    // Se muestra la informacion
+
+
     contenedor.innerHTML = `
 
         <div class="row g-4">
 
-
-            <!-- ==========================================
-                 IMAGEN
-                 ========================================== -->
-
+            <!-- Imagen -->
             <div class="col-12 col-md-5">
 
                 <img
@@ -59,24 +96,20 @@ document.addEventListener("DOMContentLoaded", () =>{
             </div>
 
 
-            <!-- ==========================================
-                 INFORMACIÓN
-                 ========================================== -->
-
+            <!-- Información -->
             <div class="col-12 col-md-7">
 
-
-                <!-- Tipo -->
                 <span class="badge bg-danger mb-3">
 
-                    ${tipo === "teatro"
-                        ? "TEATRO"
-                        : "CINE"}
+                    ${
+                        tipo === "teatro"
+                            ? "TEATRO"
+                            : "PELÍCULA"
+                    }
 
                 </span>
 
 
-                <!-- Título -->
                 <h1 class="fw-bold">
 
                     ${contenido.titulo}
@@ -84,15 +117,13 @@ document.addEventListener("DOMContentLoaded", () =>{
                 </h1>
 
 
-                <!-- Valoración -->
-                <p class="text-warning fs-5">
+                <p class="text-warning">
 
-                    ★ ${contenido.valoracion}
+                    ★ ${contenido.valoracion || 0}
 
                 </p>
 
 
-                <!-- Género -->
                 <p class="text-secondary">
 
                     ${contenido.genero}
@@ -100,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () =>{
                 </p>
 
 
-                <!-- Sinopsis -->
                 <p>
 
                     ${contenido.sinopsis}
@@ -111,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () =>{
                 <hr>
 
 
-                <!-- Duración -->
                 <p>
 
                     <strong>Duración:</strong>
@@ -121,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () =>{
                 </p>
 
 
-                <!-- Clasificación -->
                 <p>
 
                     <strong>Clasificación:</strong>
@@ -131,7 +159,6 @@ document.addEventListener("DOMContentLoaded", () =>{
                 </p>
 
 
-                <!-- Director -->
                 <p>
 
                     <strong>Director:</strong>
@@ -141,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () =>{
                 </p>
 
 
-                <!-- Reparto -->
                 <p>
 
                     <strong>Reparto:</strong>
@@ -151,10 +177,9 @@ document.addEventListener("DOMContentLoaded", () =>{
                 </p>
 
 
-                <!-- Ir a funciones -->
                 <a
-                    href="funciones.html"
-                    class="btn btn-danger btn-lg mt-3"
+                    href="funciones.html?contenidoId=${contenido.id}&tipo=${tipo}"
+                    class="btn btn-danger mt-3"
                 >
 
                     <i class="bi bi-calendar-event"></i>
@@ -166,7 +191,6 @@ document.addEventListener("DOMContentLoaded", () =>{
             </div>
 
         </div>
+
     `;
-
-
-})
+});

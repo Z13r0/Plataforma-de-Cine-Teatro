@@ -1,46 +1,251 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    // obtener datos
     const params = new URLSearchParams(window.location.search);
-    const id = parseInt(params.get("id"));
-    const tipo = params.get("tipo");
-    const hora = params.get("hora") || "18:00 hrs";
-    const asientos = params.get("asientos") ? params.get("asientos").split(",") : [];
-    const total = params.get("total") || "0";
 
-    const lista = (tipo === "teatro") ? DB.obras : DB.peliculas;
-    const item = lista.find(e => e.id === id) || { titulo: "Reserva de Entrada" };
+    const id =
+        parseInt(params.get("id"));
 
-    // Renderiza los datos a la vista
-    document.getElementById("resumenTitulo").textContent = item.titulo;
-    document.getElementById("resumenHora").textContent = hora;
-    document.getElementById("resumenAsientos").textContent = asientos.join(", ") || "N/A";
-    document.getElementById("resumenTotal").textContent = parseInt(total).toLocaleString();
 
-    // Manejo de confirmación del formulario
-    const form = document.getElementById("formCompra");
-    if (form) {
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
+    const tipo =
+        params.get("tipo");
 
-            const nuevaTicket = {
-                idTicket: "TICK-" + Math.floor(100000 + Math.random() * 900000),
-                titulo: item.titulo,
-                tipo: tipo,
-                hora: hora,
-                asientos: asientos,
-                total: parseInt(total),
-                cliente: document.getElementById("nombreCliente").value,
-                email: document.getElementById("emailCliente").value,
-                fechaCompra: new Date().toLocaleDateString("es-CL")
-            };
 
-            // Guardar en el Historial de LocalStorage
-            const historial = JSON.parse(localStorage.getItem("historialCompras")) || [];
-            historial.push(nuevaTicket);
-            localStorage.setItem("historialCompras", JSON.stringify(historial));
+    const funcionId =
+        parseInt(params.get("funcionId"));
 
-            // Redirigir al comprobante de entradas
-            window.location.href = `entradas.html?ticketId=${nuevaTicket.idTicket}`;
-        });
+
+    const hora =
+        params.get("hora");
+
+
+    // Convertimos "1,2,3" en:
+    //
+    // ["1", "2", "3"]
+
+    const asientos =
+        params.get("asientos")
+            ? params.get("asientos").split(",")
+            : [];
+
+
+    // Convertimos el total a número
+    const total =
+        parseInt(params.get("total")) || 0;
+
+    // Buscar contenido
+    const lista =
+        tipo === "teatro"
+            ? DB.obras
+            : DB.peliculas;
+
+
+    const item =
+        lista.find(e => e.id === id);
+
+    // Buscar por id
+    const funcion =
+        DB.funciones.find(
+            e => e.id === funcionId
+        );
+
+    // Mostrar el resumen 
+    const titulo =
+        document.getElementById(
+            "resumenTitulo"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            item
+                ? item.titulo
+                : "Reserva";
+
     }
-});
+
+
+    const resumenHora =
+        document.getElementById(
+            "resumenHora"
+        );
+
+
+    if (resumenHora) {
+
+        resumenHora.textContent =
+            hora || "-";
+
+    }
+
+
+    const resumenAsientos =
+        document.getElementById(
+            "resumenAsientos"
+        );
+
+
+    if (resumenAsientos) {
+
+        resumenAsientos.textContent =
+            asientos.join(", ");
+
+    }
+
+
+    const resumenTotal =
+        document.getElementById(
+            "resumenTotal"
+        );
+
+
+    if (resumenTotal) {
+
+        resumenTotal.textContent =
+            total.toLocaleString("es-CL");
+
+    }
+
+    // Formulario de la compra
+    const form =
+        document.getElementById(
+            "formCompra"
+        );
+
+
+    // Si el formulario existe...
+    if (form) {
+
+
+        // Esperamos que el usuario
+        // presione "Comprar"
+
+        form.addEventListener(
+            "submit",
+            (e) => {
+
+
+                // Evitamos que el formulario
+                // recargue la página
+
+                e.preventDefault();
+
+
+                // Creacion de la entrada a la pelicula u obra
+                const ticket = {
+
+                    // ID único basado en la hora actual
+                    idTicket:
+                        "TICK-" + Date.now(),
+
+
+                    // Nombre de película u obra
+                    titulo:
+                        item
+                            ? item.titulo
+                            : "Sin título",
+
+
+                    // Tipo
+                    tipo:
+                        tipo,
+
+
+                    // Función
+                    funcionId:
+                        funcionId,
+
+
+                    // Fecha
+                    fecha:
+                        funcion
+                            ? funcion.fecha
+                            : "",
+
+
+                    // Hora
+                    hora:
+                        hora,
+
+
+                    // Sala
+                    sala:
+                        funcion
+                            ? funcion.salaId
+                            : "",
+
+
+                    // Butacas
+                    asientos:
+                        asientos,
+
+
+                    // Cantidad
+                    cantidad:
+                        asientos.length,
+
+
+                    // Precio total
+                    total:
+                        total,
+
+
+                    // Nombre del cliente
+                    cliente:
+                        document.getElementById(
+                            "nombreCliente"
+                        ).value,
+
+
+                    // Email
+                    email:
+                        document.getElementById(
+                            "emailCliente"
+                        ).value,
+
+
+                    // Fecha de compra
+                    fechaCompra:
+                        new Date()
+                            .toLocaleDateString(
+                                "es-CL"
+                            )
+                };
+
+                // Se obtiene el historial de compras
+                const historial =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "historialCompras"
+                        )
+                    ) || [];
+
+
+                // Agregamos la nueva entrada
+                historial.push(ticket);
+
+                // Se guarda en un LocalStorage
+                localStorage.setItem(
+                    "historialCompras",
+                    JSON.stringify(historial)
+                );
+
+
+                // Guardamos también
+                // la última entrada creada
+
+                localStorage.setItem(
+                    "ultimaEntrada",
+                    JSON.stringify(ticket)
+                );
+
+                window.location.href =
+                    `entradas.html?ticketId=${ticket.idTicket}`;
+
+            }
+        );
+
+    }
+
+})
