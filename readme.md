@@ -25,6 +25,37 @@ El proyecto permite navegar por las diferentes secciones y realizar un flujo de 
 
 ---
 
+## 🚀 Cómo usar el proyecto
+
+### 1. Abrir el proyecto
+Simplemente abre el archivo `index.html` en tu navegador (puedes usar Live Server en Visual Studio Code).
+
+### 2. Crear un usuario (Registro)
+1. Ve a **Registrarse** (o entra a `registro.html`).
+2. Completa:
+   - Nombre completo
+   - Correo electrónico
+   - Contraseña
+3. Haz clic en **Registrarme**.
+4. Serás redirigido al Login.
+
+### 3. Iniciar sesión
+1. Ve a **Iniciar Sesión**.
+2. Ingresa el correo y la contraseña con los que te registraste.
+3. Al iniciar sesión correctamente verás tu nombre en la barra de navegación.
+
+### 4. Cuenta de Administrador (ya incluida)
+Puedes entrar con esta cuenta de prueba:
+
+| Campo       | Valor              |
+|-------------|--------------------|
+| Correo      | `admin@admin.cl`   |
+| Contraseña  | `admin123`         |
+
+Con esta cuenta podrás acceder al **Panel de Administración**.
+
+---
+
 ## 🎯 Objetivo del proyecto
 
 El objetivo es aplicar los conocimientos aprendidos durante la carrera en el desarrollo de una página web utilizando HTML, CSS y JavaScript.
