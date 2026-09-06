@@ -1,213 +1,116 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Obtener Datos de la URL
+  const params = new URLSearchParams(window.location.search);
 
-    // Obtener Datos url
-    const params =
-        new URLSearchParams(window.location.search);
+  // ID de la película u obra
+  const id = parseInt(params.get("id"));
 
+  // Tipo: cine o teatro
+  const tipo = params.get("tipo");
 
-    // ID de la película u obra
-    const id =
-        parseInt(params.get("id"));
+  // ID de la función
+  const funcionId = parseInt(params.get("funcionId"));
 
+  // Se busca el contenido
+  const lista = tipo === "teatro" ? DB.obras : DB.peliculas;
+  const contenido = lista.find((item) => item.id === id);
 
-    // Tipo: cine o teatro
-    const tipo =
-        params.get("tipo");
+  // Busca la función por ID
+  const funcion = DB.funciones.find((item) => item.id === funcionId);
 
+  // Busca la sala
+  let sala = null;
+  if (funcion) {
+    sala = DB.salas.find((item) => item.id === funcion.salaId);
+  }
 
-    // ID de la función
-    const funcionId =
-        parseInt(params.get("funcionId"));
+  // Validaciones
+  if (!contenido || !funcion || !sala) {
+    alert("No se encontró la función.");
+    return;
+  }
 
-    
-    // Se busca el contenido
-    const lista =
-        tipo === "teatro"
-            ? DB.obras
-            : DB.peliculas;
+  // Mostrar información básica
+  document.getElementById("tituloSeleccion").textContent = contenido.titulo;
+  document.getElementById("detallesFuncion").textContent = `${funcion.fecha} | ${funcion.hora} | ${sala.nombre}`;
 
+  // Contenedor de Butacas
+  const contenedor = document.getElementById("contenedorButacas");
 
-    const contenido =
-        lista.find(item => item.id === id);
+  // Array para almacenar los asientos seleccionados
+  const asientosSeleccionados = [];
 
-    // Busca la funcion del ID
-    const funcion = DB.funciones.find(item => item.id === funcionId);
+  // Crear las butacas según la capacidad de la sala
+  const capacidad = sala.capacidad;
 
-    // Busca la sala
-    let sala = null;
+  for (let i = 1; i <= capacidad; i++) {
+    // Crear el botón HTML
+    const boton = document.createElement("button");
+    boton.className = "btn btn-outline-light";
+    boton.textContent = i;
+    boton.style.width = "50px";
 
-    if (funcion) {
-        sala = DB.salas.find(item => item.id === funcion.salaId);
-    }
+    // Evento Click para seleccionar/deseleccionar
+    boton.addEventListener("click", () => {
+      const indice = asientosSeleccionados.indexOf(i);
 
+      if (indice === -1) {
+        // Seleccionar
+        asientosSeleccionados.push(i);
+        boton.classList.remove("btn-outline-light");
+        boton.classList.add("btn-danger");
+      } else {
+        // Deseleccionar
+        asientosSeleccionados.splice(indice, 1);
+        boton.classList.remove("btn-danger");
+        boton.classList.add("btn-outline-light");
+      }
 
-    // Se validan los datos
-    if (!contenido || !funcion || !sala) {
-        alert("No se encontro la función.")
-        return;
-    }
+      // Actualizar información en pantalla
+      actualizarResumen();
+    });
 
-    // Permite ver la información
-    document.getElementById("tituloSeleccion").textContent = contenido.titulo;
-
-    document.getElementById("detallesFuncion").textContent = `${funcion.fecha} | ${funcion.hora} | ${sala.nombre}`;
-
-    // Contenedor Butacas
-    const contenedor =document.getElementById("contenedorButacas");
-
-    // Array para butacas ocupadas
-    const asientosSeleccionados = [];
-
-    // Permite crear las butacas
-    const capacidad =
-        sala.capacidad;
-
-
-    // Recorremos desde 1 hasta la capacidad.
-
-    for (let i = 1; i <= capacidad; i++) {
-
-
-        // Creamos un botón HTML
-        const boton =
-            document.createElement("button");
-
-
-        // Le asignamos clases Bootstrap
-        boton.className =
-            "btn btn-outline-light";
-
-
-        // El número será el texto del botón
-        boton.textContent =
-            i;
-
-
-        // Tamaño del botón
-        boton.style.width =
-            "50px";
-
-        // Click
-
-        boton.addEventListener("click", () => {
-
-            // Verificacion si existe
-            const indice = asientosSeleccionados.indexOf(i);
-
-            // Seleccion de butaca
-            if (indice === -1) {
-
-
-                // Agregamos el número al array
-                asientosSeleccionados.push(i);
-
-
-                // Cambiamos el color
-                boton.classList.remove(
-                    "btn-outline-light"
-                );
-
-
-                boton.classList.add(
-                    "btn-danger"
-                );
-
-
-            } else {
-
-                // Deseleccionar la butaca
-                // Eliminamos el asiento
-                asientosSeleccionados.splice(
-                    indice,
-                    1
-                );
-
-
-                // Restauramos el estilo
-                boton.classList.remove(
-                    "btn-danger"
-                );
-
-
-                boton.classList.add(
-                    "btn-outline-light"
-                );
-
-            }
-            // Actualizamos cantidad y precio
-            actualizarResumen();
-
-        });
-    }
+    // Agregar el botón al contenedor (Dentro del bucle)
     contenedor.appendChild(boton);
+  }
 
-})
+  // Función para actualizar la cantidad y el total
+  function actualizarResumen() {
+    const cantidadEl = document.getElementById("cantidadSeleccionadas");
+    const totalEl = document.getElementById("total");
 
+    if (cantidadEl) {
+      cantidadEl.textContent = asientosSeleccionados.length;
+    }
 
-// Funcion para actualizar el resumen
-function actualizarResumen() {
+    const total = asientosSeleccionados.length * sala.precioBase;
 
+    if (totalEl) {
+      totalEl.textContent = total.toLocaleString("es-CL");
+    }
+  }
 
-        // Mostramos cantidad
-        document
-            .getElementById("cantidadSeleccionadas")
-            .textContent =
-            asientosSeleccionados.length;
+  // Evento para el botón Continuar
+  const btnContinuar = document.getElementById("btnContinuar");
+  if (btnContinuar) {
+    btnContinuar.addEventListener("click", () => {
+      if (asientosSeleccionados.length === 0) {
+        alert("Debes seleccionar al menos una butaca.");
+        return;
+      }
 
+      const total = asientosSeleccionados.length * sala.precioBase;
 
-        // Calculamos el total
-        const total =
-            asientosSeleccionados.length *
-            sala.precioBase;
+      // Generar URL hacia la página de compra
+      const url =
+        `compra.html?id=${id}` +
+        `&tipo=${tipo}` +
+        `&funcionId=${funcionId}` +
+        `&hora=${encodeURIComponent(funcion.hora)}` +
+        `&asientos=${asientosSeleccionados.join(",")}` +
+        `&total=${total}`;
 
-
-        // Mostramos el total
-        document
-            .getElementById("total")
-            .textContent =
-            total.toLocaleString("es-CL");
-
-}
-
-// Continuar
-document
-        .getElementById("btnContinuar")
-        .addEventListener("click", () => {
-
-
-            // No permitimos continuar
-            // sin seleccionar butacas.
-
-            if (
-                asientosSeleccionados.length === 0
-            ) {
-
-                alert(
-                    "Debes seleccionar al menos una butaca."
-                );
-
-                return;
-
-            }
-
-
-            // Calculamos total
-            const total =
-                asientosSeleccionados.length *
-                sala.precioBase;
-
-            // URL Compra
-            const url =
-                `compra.html?id=${id}` +
-                `&tipo=${tipo}` +
-                `&funcionId=${funcionId}` +
-                `&hora=${encodeURIComponent(funcion.hora)}` +
-                `&asientos=${asientosSeleccionados.join(",")}` +
-                `&total=${total}`;
-
-
-            // Redirigimos a compra.html
-            window.location.href =
-                url;
-
-        });
+      window.location.href = url;
+    });
+  }
+});

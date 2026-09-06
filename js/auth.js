@@ -1,4 +1,3 @@
-
 // ======================================================
 // AUTH.JS
 // Maneja:
@@ -8,239 +7,149 @@
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-    
-    // Se crea un administrador para testing
-    crearAdminInical();
+  // Se crea un administrador para testing (Corregido el error de tipeo aquí)
+  crearAdminInicial();
 
-    // Buscamos el formulario de login y registro
-    const formLogin = document.getElementById("formLogin");
-    const formRegistro = document.getElementById("formRegistro");
+  // Buscamos el formulario de login y registro
+  const formLogin = document.getElementById("formLogin");
+  const formRegistro = document.getElementById("formRegistro");
 
-    if (formLogin) {
+  if (formLogin) {
+    formLogin.addEventListener("submit", (e) => {
+      // Evitamos que el formulario recargue la página
+      e.preventDefault();
 
-        formLogin.addEventListener("submit", (e) => {
+      // Obtenemos los datos
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
 
-            // Evitamos que el formulario recargue la página
-            e.preventDefault();
+      // Recuperamos usuarios
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-            // Obtenemos los datos
-            const email =
-                document.getElementById("email").value.trim().toLowerCase();
+      // Buscamos al usuario
+      const usuario = usuarios.find(
+        (user) => user.email === email && user.password === password
+      );
 
-            const password =
-                document.getElementById("password").value;
+      // Si no encontramos usuario
+      if (!usuario) {
+        alert("Correo o contraseña incorrectos.");
+        return;
+      }
 
-            // Recuperamos usuarios
-            const usuarios =
-                JSON.parse(localStorage.getItem("usuarios")) || [];
+      // Guardamos la sesión actual
+      localStorage.setItem("usuarioActual", JSON.stringify(usuario));
 
-            // Buscamos al usuario
-            const usuario =
-                usuarios.find(
-                    user =>
-                        user.email === email &&
-                        user.password === password
-                );
+      // Comprobamos si es admin
+      if (usuario.rol === "admin" && esCorreoAdministrador(usuario.email)) {
+        // Administrador
+        window.location.href = "admin.html";
+      } else {
+        // Cliente normal
+        window.location.href = "index.html";
+      }
+    });
+  }
 
-            // Si no encontramos usuario
-            if (!usuario) {
+  // Formulario de Registro
+  if (formRegistro) {
+    formRegistro.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-                alert("Correo o contraseña incorrectos.");
+      // Obtenemos información
+      const nombre = document.getElementById("nombre").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-                return;
-            }
+      // Validamos contraseña
+      if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden.");
+        return;
+      }
 
-            // Guardamos la sesión actual
-            localStorage.setItem(
-                "usuarioActual",
-                JSON.stringify(usuario)
-            );
+      // Recuperamos usuarios
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-            // Comprobamos si es admin
-            if (
-                usuario.rol === "admin" &&
-                esCorreoAdministrador(usuario.email)
-            ) {
+      // Comprobamos si el correo ya existe
+      const existe = usuarios.some((usuario) => usuario.email === email);
 
-                // Administrador
-                window.location.href = "admin.html";
+      if (existe) {
+        alert("Este correo ya está registrado.");
+        return;
+      }
 
-            } else {
+      // Se determina el rol
+      // Si el correo es administrativo, se registra como administrador.
+      // De lo contrario será cliente.
+      const rol = esCorreoAdministrador(email) ? "admin" : "cliente";
 
-                // Cliente normal
-                window.location.href = "index.html";
-            }
+      // Se crea el usuario
+      const nuevoUsuario = {
+        id: Date.now(),
+        nombre: nombre,
+        email: email,
+        password: password,
+        rol: rol
+      };
 
-        });
-    }
+      // Agregamos usuario
+      usuarios.push(nuevoUsuario);
 
-    // Formulario de Registro
-    if (formRegistro) {
+      // Guardamos usuarios
+      localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
-        formRegistro.addEventListener("submit", (e) => {
+      alert("Cuenta creada correctamente.");
 
-            e.preventDefault();
-
-            // Obtenemos información
-            const nombre =
-                document.getElementById("nombre").value.trim();
-
-            const email =
-                document
-                    .getElementById("email")
-                    .value
-                    .trim()
-                    .toLowerCase();
-
-            const password =
-                document.getElementById("password").value;
-
-            const confirmPassword =
-                document.getElementById("confirmPassword").value;
-
-
-            // Validamos contraseña
-            if (password !== confirmPassword) {
-
-                alert("Las contraseñas no coinciden.");
-
-                return;
-            }
-
-
-            // Recuperamos usuarios
-            const usuarios =
-                JSON.parse(localStorage.getItem("usuarios")) || [];
-
-
-            // Comprobamos si el correo ya existe
-            const existe =
-                usuarios.some(
-                    usuario => usuario.email === email
-                );
-
-
-            if (existe) {
-
-                alert("Este correo ya está registrado.");
-
-                return;
-            }
-
-
-            // Se determina el rol
-
-            // Si el correo es administrativo,
-            // se registra como administrador.
-            //
-            // De lo contrario será cliente.
-
-            const rol =
-                esCorreoAdministrador(email)
-                    ? "admin"
-                    : "cliente";
-            
-            // Se creal el usuario
-            const nuevoUsuario = {
-
-                id: Date.now(),
-
-                nombre: nombre,
-
-                email: email,
-
-                password: password,
-
-                rol: rol
-            };
-
-
-            // Agregamos usuario
-            usuarios.push(nuevoUsuario);
-
-
-            // Guardamos usuarios
-            localStorage.setItem(
-                "usuarios",
-                JSON.stringify(usuarios)
-            );
-
-
-            alert("Cuenta creada correctamente.");
-
-
-            // Volvemos al login
-            window.location.href = "login.html";
-
-        });
-    }
-
+      // Volvemos al login
+      window.location.href = "login.html";
+    });
+  }
 });
 
 // Permite saber si el correo es o no de un admin
 function esCorreoAdministrador(email) {
+  // Convertimos a minúsculas
+  email = email.toLowerCase().trim();
 
-    // Convertimos a minúsculas
-    email = email.toLowerCase().trim();
+  // Separamos correo y dominio
+  const partes = email.split("@");
 
-    // Separamos correo y dominio
-    const partes = email.split("@");
+  // Deben existir exactamente dos partes
+  if (partes.length !== 2) {
+    return false;
+  }
 
-    // Deben existir exactamente dos partes
-    if (partes.length !== 2) {
-        return false;
-    }
+  const dominio = partes[1];
 
-    const dominio = partes[1];
-
-    // Ejemplos permitidos:
-    //
-    // usuario@admin.cl
-    // usuario@admin.cine.cl
-    // usuario@cine.admin.cl
-
-    return (
-        dominio === "admin.cl" ||
-        dominio.endsWith(".admin.cl") ||
-        dominio.startsWith("admin.")
-    );
+  // Ejemplos permitidos:
+  // usuario@admin.cl
+  // usuario@admin.cine.cl
+  // usuario@cine.admin.cl
+  return (
+    dominio === "admin.cl" ||
+    dominio.endsWith(".admin.cl") ||
+    dominio.startsWith("admin.")
+  );
 }
 
 function crearAdminInicial() {
+  // Recuperamos usuarios
+  const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-    // Recuperamos usuarios
-    const usuarios =
-        JSON.parse(localStorage.getItem("usuarios")) || [];
+  // Comprobamos si ya existe un admin
+  const existeAdmin = usuarios.some((usuario) => usuario.email === "admin@admin.cl");
 
+  // Si no existe, lo creamos
+  if (!existeAdmin) {
+    usuarios.push({
+      id: 1,
+      nombre: "Administrador",
+      email: "admin@admin.cl",
+      password: "admin123",
+      rol: "admin"
+    });
 
-    // Comprobamos si ya existe un admin
-    const existeAdmin =
-        usuarios.some(
-            usuario => usuario.email === "admin@admin.cl"
-        );
-
-
-    // Si no existe, lo creamos
-    if (!existeAdmin) {
-
-        usuarios.push({
-
-            id: 1,
-
-            nombre: "Administrador",
-
-            email: "admin@admin.cl",
-
-            password: "admin123",
-
-            rol: "admin"
-
-        });
-
-
-        localStorage.setItem(
-            "usuarios",
-            JSON.stringify(usuarios)
-        );
-    }
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  }
 }
