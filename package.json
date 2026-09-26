@@ -1,24 +1,23 @@
 {
-  "name": "plataforma-de-cine-teatro",
-  "version": "1.0.0",
-  "description": "[![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)",
-  "main": "index.js",
+  "name": "cine-teatro",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Z13r0/Plataforma-de-Cine-Teatro.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Z13r0/Plataforma-de-Cine-Teatro/issues"
-  },
-  "homepage": "https://github.com/Z13r0/Plataforma-de-Cine-Teatro#readme",
   "dependencies": {
-    "bootstrap": "^5.3.8"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "vite": "^8.3.0"
   }
 }
