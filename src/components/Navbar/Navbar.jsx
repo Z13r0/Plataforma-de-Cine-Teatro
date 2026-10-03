@@ -1,10 +1,12 @@
 /*Para el boton de usuario se usa #userPanel como identificador */
+import { Link, NavLink } from "react-router-dom";
+
 const NAV_ITEMS = [
-  { label: "Inicio", href: "/", active: true },
-  { label: "Películas", href: "/" },
-  { label: "Teatro", href: "/" },
-  { label: "Comunidad", href: "/" },
-  { label: "Historial", href: "/" },
+  { label: "Inicio", to: "/", end: true },
+  { label: "Películas", to: "/peliculas" },
+  { label: "Obras", to: "/obras" },
+  { label: "Comunidad", to: "/comunidad" },
+  { label: "Historial", to: "/historial" },
 ];
 
 export default function Navbar() {
@@ -21,13 +23,13 @@ export default function Navbar() {
         >
           <span className="navbar-toggler-icon" />
         </button>
-        <a
+        <Link
           className="navbar-brand mx-auto fw-bold text-danger d-flex align-items-center gap-1"
-          href="/"
+          to="/"
         >
           <i className="bi bi-film fs-2" />
-          <span>Cine & Teatro</span>
-        </a>
+          <span>Cine &amp; Teatro</span>
+        </Link>
         <div
           className="offcanvas offcanvas-start"
           tabIndex={-1}
@@ -48,13 +50,10 @@ export default function Navbar() {
           <div className="offcanvas-body">
             <ul className="navbar-nav">
               {NAV_ITEMS.map((item) => (
-                <li className="nav-item" key={item.label}>
-                  <a
-                    className={item.active ? "nav-link active" : "nav-link"}
-                    href={item.href}
-                  >
+                <li className="nav-item" key={item.to} data-bs-dismiss="offcanvas">
+                  <NavLink className="nav-link" to={item.to} end={item.end}>
                     {item.label}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>
