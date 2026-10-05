@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
 import Comunidad from "./pages/Comunidad";
 import Historial from "./pages/Historial";
 import Inicio from "./pages/Inicio";
@@ -8,7 +9,7 @@ import Peliculas from "./pages/Peliculas";
 
 function App() {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <header>
         <Navbar />
       </header>
@@ -19,7 +20,8 @@ function App() {
         <Route path="/comunidad" element={<Comunidad />} />
         <Route path="/historial" element={<Historial />} />
       </Routes>
-    </>
+      <Footer />
+    </div>
   );
 }
 
