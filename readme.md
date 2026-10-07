@@ -191,7 +191,7 @@ feat: UI Cinemark, compra rápida, validaciones, carrusel y tests Jasmine/Karma
 
 ---
 
-## Autor
+## Autores
 
 Proyecto académico — Duoc UC — 2026
 ```

@@ -1,7 +1,11 @@
 /* =====================================================
-   Cine & Teatro - Estilos globales + tema + Cinemark UI
+   Cine & Teatro — styles.css
+   Estilos globales, tema claro/oscuro y UI tipo Cinemark
    ===================================================== */
 
+/* -----------------------------------------------------
+   1. VARIABLES TEMA OSCURO (por defecto)
+   ----------------------------------------------------- */
 :root {
   --bg-primary: #0a0a0a;
   --bg-secondary: #141414;
@@ -20,6 +24,9 @@
   --transition: 0.25s ease;
 }
 
+/* -----------------------------------------------------
+   2. VARIABLES TEMA CLARO
+   ----------------------------------------------------- */
 [data-theme="light"] {
   --bg-primary: #f5f5f5;
   --bg-secondary: #ffffff;
@@ -36,6 +43,9 @@
   --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
 
+/* -----------------------------------------------------
+   3. RESET Y BASE
+   ----------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -65,6 +75,7 @@ a {
   color: var(--accent);
   transition: color var(--transition);
 }
+
 a:hover {
   color: var(--accent-hover);
 }
@@ -72,11 +83,14 @@ a:hover {
 .text-secondary {
   color: var(--text-secondary) !important;
 }
+
 .text-muted {
   color: var(--text-muted) !important;
 }
 
-/* ========== NAVBAR (sticky estilo Cinemark) ========== */
+/* -----------------------------------------------------
+   4. NAVBAR STICKY
+   ----------------------------------------------------- */
 .navbar,
 .navbar-cinemark {
   position: sticky;
@@ -134,18 +148,23 @@ a:hover {
 .navbar-toggler {
   border-color: var(--border);
 }
+
 .navbar-toggler-icon {
   filter: invert(1);
 }
+
 [data-theme="light"] .navbar-toggler-icon {
   filter: none;
 }
 
-/* ========== BOTONES ========== */
+/* -----------------------------------------------------
+   5. BOTONES
+   ----------------------------------------------------- */
 .btn-danger {
   background-color: var(--accent) !important;
   border-color: var(--accent) !important;
 }
+
 .btn-danger:hover {
   background-color: var(--accent-hover) !important;
   border-color: var(--accent-hover) !important;
@@ -155,18 +174,16 @@ a:hover {
   color: var(--text-primary) !important;
   border-color: var(--border) !important;
 }
+
 .btn-outline-light:hover {
   background: var(--bg-elevated) !important;
   color: var(--text-primary) !important;
   border-color: var(--text-secondary) !important;
 }
 
-[data-theme="light"] .btn-outline-light {
-  color: var(--text-primary) !important;
-  border-color: var(--border) !important;
-}
-
-/* ========== CARDS ========== */
+/* -----------------------------------------------------
+   6. CARDS Y POSTERS
+   ----------------------------------------------------- */
 .card,
 .bg-card {
   background-color: var(--bg-card) !important;
@@ -181,12 +198,12 @@ a:hover {
 .card-hover {
   transition: transform var(--transition), box-shadow var(--transition);
 }
+
 .card-hover:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
 }
 
-/* Poster cards (cartelera tipo Cinemark) */
 .poster-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -195,10 +212,12 @@ a:hover {
   transition: transform var(--transition), box-shadow var(--transition);
   height: 100%;
 }
+
 .poster-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-hover);
 }
+
 .poster-card img {
   width: 100%;
   aspect-ratio: 2 / 3;
@@ -206,42 +225,97 @@ a:hover {
   display: block;
   background: var(--bg-elevated);
 }
+
 .poster-card .poster-meta {
   padding: 0.75rem;
 }
+
 .badge-formato {
   font-size: 0.65rem;
   letter-spacing: 0.02em;
 }
 
-/* ========== HERO (siempre oscuro / texto legible) ========== */
+/* -----------------------------------------------------
+   7. HERO BANNER (siempre texto blanco)
+   ----------------------------------------------------- */
 .hero-banner {
   background: linear-gradient(135deg, #1a0508 0%, #2b080c 50%, #1a0508 100%) !important;
-  color: #fff !important;
+  color: #ffffff !important;
   border-radius: var(--radius);
   position: relative;
   overflow: hidden;
 }
+
+/* Todo el texto del hero en blanco (oscuro y claro) */
+.hero-banner,
 .hero-banner h1,
+.hero-banner h2,
+.hero-banner h3,
 .hero-banner p,
+.hero-banner span,
 .hero-banner .badge,
-.hero-banner span {
-  color: #fff !important;
+.hero-banner .display-4,
+.hero-banner .fs-5,
+.hero-banner a:not(.btn-danger) {
+  color: #ffffff !important;
 }
 
+.hero-banner p,
+.hero-banner .opacity-75 {
+  color: rgba(255, 255, 255, 0.9) !important;
+  opacity: 1 !important;
+}
+
+.hero-banner .btn-outline-light {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  background: transparent !important;
+}
+
+.hero-banner .btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* Refuerzo explícito en tema claro (evita heredar --text-primary oscuro) */
 [data-theme="light"] .hero-banner {
   background: linear-gradient(135deg, #1a0508 0%, #2b080c 50%, #1a0508 100%) !important;
-  color: #fff !important;
+  color: #ffffff !important;
 }
 
-/* ========== SECCIONES ========== */
+[data-theme="light"] .hero-banner h1,
+[data-theme="light"] .hero-banner h2,
+[data-theme="light"] .hero-banner h3,
+[data-theme="light"] .hero-banner p,
+[data-theme="light"] .hero-banner span,
+[data-theme="light"] .hero-banner .badge,
+[data-theme="light"] .hero-banner .display-4,
+[data-theme="light"] .hero-banner .fs-5 {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .hero-banner .btn-outline-light {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  background: transparent !important;
+}
+
+[data-theme="light"] .hero-banner .btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* -----------------------------------------------------
+   8. SECCIONES Y FILTROS
+   ----------------------------------------------------- */
 .section-title {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
-/* ========== FILTROS ========== */
 .filtros-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -249,12 +323,16 @@ a:hover {
   padding: 1rem 1.25rem;
 }
 
+/* -----------------------------------------------------
+   9. FORMULARIOS
+   ----------------------------------------------------- */
 .form-control,
 .form-select {
   background-color: var(--bg-elevated) !important;
   border-color: var(--border) !important;
   color: var(--text-primary) !important;
 }
+
 .form-control:focus,
 .form-select:focus {
   background-color: var(--bg-elevated) !important;
@@ -262,11 +340,14 @@ a:hover {
   color: var(--text-primary) !important;
   box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
 }
+
 .form-control::placeholder {
   color: var(--text-muted);
 }
 
-/* ========== COMPRA RÁPIDA ========== */
+/* -----------------------------------------------------
+   10. COMPRA RÁPIDA
+   ----------------------------------------------------- */
 .btn-compra-rapida {
   position: fixed;
   bottom: 24px;
@@ -283,26 +364,32 @@ a:hover {
   color: var(--text-primary);
   border-left: 1px solid var(--border);
 }
+
 .offcanvas-compra .form-select,
 .offcanvas-compra .form-control {
   background: var(--bg-elevated) !important;
   border-color: var(--border) !important;
   color: var(--text-primary) !important;
 }
+
 .offcanvas-compra .btn-close {
   filter: invert(1);
 }
+
 [data-theme="light"] .offcanvas-compra .btn-close {
   filter: none;
 }
 
-/* ========== FORMATOS EXPERIENCIA ========== */
+/* -----------------------------------------------------
+   11. FORMATOS (Premier, IMAX, 4D)
+   ----------------------------------------------------- */
 .formato-card {
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--border);
   background: var(--bg-card);
 }
+
 .formato-card img {
   width: 100%;
   height: 180px;
@@ -310,23 +397,27 @@ a:hover {
   display: block;
 }
 
-/* ========== FOOTER ========== */
+/* -----------------------------------------------------
+   12. FOOTER Y BUTACAS
+   ----------------------------------------------------- */
 footer {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border);
   color: var(--text-secondary);
 }
 
-/* ========== BUTACAS ========== */
 .butaca {
   min-width: 36px;
   transition: transform 0.15s ease;
 }
+
 .butaca:not(:disabled):hover {
   transform: scale(1.08);
 }
 
-/* ========== UTILIDADES ========== */
+/* -----------------------------------------------------
+   13. UTILIDADES
+   ----------------------------------------------------- */
 .bg-elevated {
   background-color: var(--bg-elevated) !important;
 }
@@ -336,18 +427,112 @@ hr.border-custom {
   opacity: 1;
 }
 
-/* Scrollbar sutil */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-primary);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* -----------------------------------------------------
+   14. AJUSTES MODO CLARO (resto de la página)
+   ----------------------------------------------------- */
+[data-theme="light"] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .poster-card,
+[data-theme="light"] .card,
+[data-theme="light"] .bg-card,
+[data-theme="light"] .filtros-panel,
+[data-theme="light"] .formato-card {
+  background-color: #ffffff !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .poster-card h6,
+[data-theme="light"] .poster-card .card-title,
+[data-theme="light"] .section-title,
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h5 {
+  color: var(--text-primary) !important;
+}
+
+/* No aplicar color oscuro dentro del hero */
+[data-theme="light"] .hero-banner h1,
+[data-theme="light"] .hero-banner h2,
+[data-theme="light"] .hero-banner h3,
+[data-theme="light"] .hero-banner h5,
+[data-theme="light"] .hero-banner .section-title {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .text-secondary {
+  color: #5a5a5a !important;
+}
+
+[data-theme="light"] .carousel-item,
+[data-theme="light"] #carouselInner .row {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .btn-outline-light {
+  color: #141414 !important;
+  border-color: #cccccc !important;
+  background: transparent !important;
+}
+
+[data-theme="light"] .btn-outline-light:hover {
+  background: #f0f0f0 !important;
+  color: #141414 !important;
+}
+
+/* El outline del hero manda sobre la regla general */
+[data-theme="light"] .hero-banner .btn-outline-light {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  background: transparent !important;
+}
+
+[data-theme="light"] .navbar-cinemark .nav-link,
+[data-theme="light"] .navbar .nav-link {
+  color: #4a4a4a !important;
+}
+
+[data-theme="light"] .navbar-cinemark .nav-link.active,
+[data-theme="light"] .navbar-cinemark .nav-link:hover,
+[data-theme="light"] .navbar .nav-link.active,
+[data-theme="light"] .navbar .nav-link:hover {
+  color: #141414 !important;
+}
+
+[data-theme="light"] .form-control,
+[data-theme="light"] .form-select {
+  background-color: #ffffff !important;
+  color: #141414 !important;
+  border-color: #dddddd !important;
+}
+
+[data-theme="light"] .nav-pills .nav-link {
+  color: #4a4a4a;
+}
+
+[data-theme="light"] .nav-pills .nav-link.active {
+  background-color: var(--accent);
+  color: #ffffff;
 }

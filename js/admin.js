@@ -1,307 +1,310 @@
-// ======================================================
-// js/admin.js
-// Panel de Administración
-// ======================================================
+// js/admin.js — Panel admin alineado al modelo actual (datos + localStorage)
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Verificar que el usuario sea administrador
-  const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual") || "null");
-  
-  if (!usuarioActual || usuarioActual.rol !== "admin") {
-    alert("Acceso denegado. Solo administradores.");
-    window.location.href = "index.html";
+  // Solo admin
+  const user = JSON.parse(localStorage.getItem("usuarioActual") || "null");
+  if (!user || user.rol !== "admin") {
+    alert("Acceso solo para administradores.");
+    window.location.href = "login.html";
     return;
   }
 
-  // Inicializar
-  cargarSelects();
-  actualizarContadores();
-  mostrarContenidoAdmin();
-  mostrarFuncionesAdmin();
-  mostrarCompras();
+  const KEY_CONTENIDO = "contenidoAdmin";
+  const KEY_FUNCIONES = "funcionesAdmin";
 
-  // Eventos de los formularios
-  document.getElementById("formContenido")?.addEventListener("submit", agregarContenido);
-  document.getElementById("formFuncion")?.addEventListener("submit", agregarFuncion);
-});
+  function getContenidoAdmin() {
+    return JSON.parse(localStorage.getItem(KEY_CONTENIDO) || "[]");
+  }
+  function saveContenidoAdmin(arr) {
+    localStorage.setItem(KEY_CONTENIDO, JSON.stringify(arr));
+  }
+  function getFuncionesAdmin() {
+    return JSON.parse(localStorage.getItem(KEY_FUNCIONES) || "[]");
+  }
+  function saveFuncionesAdmin(arr) {
+    localStorage.setItem(KEY_FUNCIONES, JSON.stringify(arr));
+  }
 
-// ======================================================
-// Cargar los selects de Contenido y Sala
-// ======================================================
-function cargarSelects() {
-  const selectContenido = document.getElementById("contenidoFuncion");
-  const selectSala = document.getElementById("salaFuncion");
+  /** Todo el contenido: DB base + admin */
+  function todoContenido() {
+    const admin = getContenidoAdmin();
+    const baseCine = (DB.peliculas || []).map(p => ({ ...p, tipo: "cine", _origen: "base" }));
+    const baseTeatro = (DB.obras || []).map(o => ({ ...o, tipo: "teatro", _origen: "base" }));
+    const extra = admin.map(a => ({ ...a, _origen: "admin" }));
+    return [...baseCine, ...baseTeatro, ...extra];
+  }
 
-  if (!selectContenido || !selectSala) return;
+  function todasFunciones() {
+    const adminF = getFuncionesAdmin();
+    const base = (DB.funciones || []).map(f => ({ ...f, _origen: "base" }));
+    return [...base, ...adminF.map(f => ({ ...f, _origen: "admin" }))];
+  }
 
-  // Limpiar
-  selectContenido.innerHTML = '<option value="">Selecciona un contenido</option>';
-  selectSala.innerHTML = '<option value="">Selecciona una sala</option>';
+  let filtroTipo = "todos";
 
-  // Cargar películas + obras
-  const todos = [...(DB.peliculas || []), ...(DB.obras || [])];
+  // ----- LISTA CONTENIDO -----
+  function renderContenido() {
+    const lista = document.getElementById("listaContenido");
+    if (!lista) return;
+    let items = todoContenido();
+    if (filtroTipo === "cine") items = items.filter(i => i.tipo === "cine");
+    if (filtroTipo === "teatro") items = items.filter(i => i.tipo === "teatro");
 
-  // También cargar contenido que el admin haya agregado anteriormente
-  const contenidoExtra = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
-  const todoContenido = [...todos, ...contenidoExtra];
+    if (!items.length) {
+      lista.innerHTML = `<p class="text-secondary">No hay contenido.</p>`;
+      return;
+    }
 
-  todoContenido.forEach(item => {
-    const option = document.createElement("option");
-    option.value = item.id;
-    option.textContent = `${item.titulo} (${item.tipo === "cine" ? "Película" : "Teatro"})`;
-    option.dataset.tipo = item.tipo;
-    selectContenido.appendChild(option);
+    lista.innerHTML = items.map(item => {
+      const genero = Array.isArray(item.genero) ? item.genero.join(", ") : item.genero;
+      const puedeBorrar = item._origen === "admin";
+      return `
+        <div class="card border-custom bg-card">
+          <div class="card-body d-flex gap-3 align-items-start">
+            <img src="${item.imagen || ""}" alt="" style="width:56px;height:80px;object-fit:cover;border-radius:6px"
+                 onerror="this.src='https://placehold.co/56x80'">
+            <div class="flex-grow-1">
+              <span class="badge ${item.tipo === "teatro" ? "bg-primary" : "bg-danger"} mb-1">${item.tipo}</span>
+              <span class="badge bg-secondary mb-1">${item.estado || "cartelera"}</span>
+              ${item._origen === "admin" ? '<span class="badge bg-warning text-dark mb-1">Admin</span>' : ""}
+              <h6 class="fw-bold mb-0">${item.titulo}</h6>
+              <p class="small text-secondary mb-1">${genero || ""} · ${item.clasificacion || ""} · ${item.anio || ""}</p>
+              <div class="d-flex gap-2 mt-2">
+                ${puedeBorrar ? `
+                  <button type="button" class="btn btn-sm btn-outline-light btn-edit" data-id="${item.id}">Editar</button>
+                  <button type="button" class="btn btn-sm btn-outline-danger btn-del" data-id="${item.id}">Eliminar</button>
+                ` : `<span class="small text-secondary">Catálogo base (solo lectura)</span>`}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join("");
+
+    lista.querySelectorAll(".btn-del").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (!confirm("¿Eliminar este contenido?")) return;
+        const id = Number(btn.dataset.id);
+        saveContenidoAdmin(getContenidoAdmin().filter(c => Number(c.id) !== id));
+        renderContenido();
+        llenarSelectContenido();
+      });
+    });
+
+    lista.querySelectorAll(".btn-edit").forEach(btn => {
+      btn.addEventListener("click", () => cargarEdicion(Number(btn.dataset.id)));
+    });
+  }
+
+  function cargarEdicion(id) {
+    const item = getContenidoAdmin().find(c => Number(c.id) === id);
+    if (!item) return;
+    document.getElementById("editId").value = item.id;
+    document.getElementById("tipo").value = item.tipo;
+    document.getElementById("titulo").value = item.titulo || "";
+    document.getElementById("genero").value = Array.isArray(item.genero) ? item.genero.join(", ") : (item.genero || "");
+    document.getElementById("anio").value = item.anio || "";
+    document.getElementById("duracion").value = item.duracion || "";
+    document.getElementById("clasificacion").value = item.clasificacion || "TE";
+    document.getElementById("formatos").value = (item.formatos || []).join(", ");
+    document.getElementById("director").value = item.director || "";
+    document.getElementById("reparto").value = item.reparto || "";
+    document.getElementById("imagen").value = item.imagen || "";
+    document.getElementById("sinopsis").value = item.sinopsis || "";
+    document.getElementById("estado").value = item.estado || "cartelera";
+    document.getElementById("fechaEstreno").value = item.fechaEstreno || "";
+    document.getElementById("formTitulo").textContent = "Editar contenido";
+    document.getElementById("btnCancelar").classList.remove("d-none");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function resetForm() {
+    document.getElementById("formContenido").reset();
+    document.getElementById("editId").value = "";
+    document.getElementById("formTitulo").textContent = "Agregar película / obra";
+    document.getElementById("btnCancelar").classList.add("d-none");
+  }
+
+  document.getElementById("btnCancelar")?.addEventListener("click", resetForm);
+
+  document.getElementById("formContenido")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const editId = document.getElementById("editId").value;
+    const generoRaw = document.getElementById("genero").value.trim();
+    const formatosRaw = document.getElementById("formatos").value.trim();
+
+    const data = {
+      id: editId ? Number(editId) : Date.now(),
+      tipo: document.getElementById("tipo").value,
+      titulo: document.getElementById("titulo").value.trim(),
+      genero: generoRaw.split(",").map(s => s.trim()).filter(Boolean),
+      anio: Number(document.getElementById("anio").value) || null,
+      duracion: document.getElementById("duracion").value.trim(),
+      clasificacion: document.getElementById("clasificacion").value,
+      formatos: formatosRaw ? formatosRaw.split(",").map(s => s.trim()).filter(Boolean) : ["2D"],
+      director: document.getElementById("director").value.trim(),
+      reparto: document.getElementById("reparto").value.trim(),
+      imagen: document.getElementById("imagen").value.trim(),
+      sinopsis: document.getElementById("sinopsis").value.trim(),
+      valoracion: 0,
+      estado: document.getElementById("estado").value,
+      fechaEstreno: document.getElementById("fechaEstreno").value.trim(),
+      restricciones: { activa: false, texto: "", items: [] }
+    };
+
+    let arr = getContenidoAdmin();
+    if (editId) {
+      arr = arr.map(c => Number(c.id) === data.id ? data : c);
+    } else {
+      // IDs: cine < 100 usa timestamp; teatro admin puede ser > 1000
+      if (data.tipo === "teatro" && data.id < 200) data.id = Date.now();
+      arr.push(data);
+    }
+    saveContenidoAdmin(arr);
+    resetForm();
+    renderContenido();
+    llenarSelectContenido();
+    alert("Contenido guardado. Aparecerá en cartelera junto al catálogo base.");
   });
 
-  // Cargar salas
-  (DB.salas || []).forEach(sala => {
-    const option = document.createElement("option");
-    option.value = sala.id;
-    option.textContent = `${sala.nombre} (${sala.capacidad} butacas)`;
-    selectSala.appendChild(option);
+  // Filtros
+  function setFiltro(tipo, btn) {
+    filtroTipo = tipo;
+    ["filtroTodos", "filtroCine", "filtroTeatro"].forEach(id => {
+      document.getElementById(id)?.classList.remove("active");
+    });
+    btn.classList.add("active");
+    renderContenido();
+  }
+  document.getElementById("filtroTodos")?.addEventListener("click", function () { setFiltro("todos", this); });
+  document.getElementById("filtroCine")?.addEventListener("click", function () { setFiltro("cine", this); });
+  document.getElementById("filtroTeatro")?.addEventListener("click", function () { setFiltro("teatro", this); });
+
+  // ----- FUNCIONES -----
+  function llenarSelectContenido() {
+    const sel = document.getElementById("funContenido");
+    if (!sel) return;
+    const items = todoContenido().filter(i => !i.estado || i.estado === "cartelera");
+    sel.innerHTML = items.map(i =>
+      `<option value="${i.id}|${i.tipo}">${i.titulo} (${i.tipo})</option>`
+    ).join("");
+  }
+
+  function llenarSalas() {
+    const sel = document.getElementById("funSala");
+    if (!sel || !DB.salas) return;
+    sel.innerHTML = DB.salas.map(s =>
+      `<option value="${s.id}">${s.nombre} ($${s.precioBase})</option>`
+    ).join("");
+  }
+
+  function renderFunciones() {
+    const lista = document.getElementById("listaFunciones");
+    if (!lista) return;
+    const funcs = todasFunciones().slice().reverse();
+    const contenido = todoContenido();
+
+    if (!funcs.length) {
+      lista.innerHTML = `<p class="text-secondary">No hay funciones.</p>`;
+      return;
+    }
+
+    lista.innerHTML = funcs.map(f => {
+      const item = contenido.find(c => Number(c.id) === Number(f.contenidoId) && c.tipo === f.tipo);
+      const sala = (DB.salas || []).find(s => s.id === f.salaId);
+      const puedeBorrar = f._origen === "admin";
+      return `
+        <div class="card border-custom bg-card mb-2">
+          <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <strong>${item ? item.titulo : "ID " + f.contenidoId}</strong>
+              <span class="badge bg-secondary ms-1">${f.tipo}</span>
+              <p class="small text-secondary mb-0">${f.fecha} · ${f.hora} · ${sala ? sala.nombre : f.salaId}</p>
+            </div>
+            ${puedeBorrar
+              ? `<button type="button" class="btn btn-sm btn-outline-danger btn-del-fun" data-id="${f.id}">Eliminar</button>`
+              : `<span class="small text-secondary">Base</span>`}
+          </div>
+        </div>`;
+    }).join("");
+
+    lista.querySelectorAll(".btn-del-fun").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (!confirm("¿Eliminar función?")) return;
+        const id = Number(btn.dataset.id);
+        saveFuncionesAdmin(getFuncionesAdmin().filter(f => Number(f.id) !== id));
+        renderFunciones();
+      });
+    });
+  }
+
+  document.getElementById("formFuncion")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const [contenidoId, tipo] = document.getElementById("funContenido").value.split("|");
+    const fecha = document.getElementById("funFecha").value;
+    const hora = document.getElementById("funHora").value;
+    const salaId = document.getElementById("funSala").value;
+
+    const arr = getFuncionesAdmin();
+    arr.push({
+      id: Date.now(),
+      contenidoId: Number(contenidoId),
+      tipo,
+      salaId,
+      fecha,
+      hora,
+      _origen: "admin"
+    });
+    saveFuncionesAdmin(arr);
+    e.target.reset();
+    renderFunciones();
+    alert("Función agregada.");
   });
-}
 
-// ======================================================
-// Agregar nuevo contenido (película u obra)
-// ======================================================
-function agregarContenido(e) {
-  e.preventDefault();
-
-  const tipo = document.getElementById("tipoContenido").value;
-  const titulo = document.getElementById("tituloContenido").value.trim();
-  const genero = document.getElementById("generoContenido").value;
-  const duracion = document.getElementById("duracionContenido").value.trim();
-  const clasificacion = document.getElementById("clasificacionContenido").value;
-  const director = document.getElementById("directorContenido").value.trim();
-  const reparto = document.getElementById("repartoContenido").value.trim();
-  const valoracion = parseFloat(document.getElementById("valoracionContenido").value) || 0;
-  const imagen = document.getElementById("imagenContenido").value.trim();
-  const sinopsis = document.getElementById("sinopsisContenido").value.trim();
-
-  if (!titulo || !genero || !duracion || !director || !reparto || !imagen || !sinopsis) {
-    alert("Por favor completa todos los campos.");
-    return;
-  }
-
-  // Crear nuevo contenido
-  const nuevo = {
-    id: Date.now(), // ID único
-    titulo,
-    tipo,
-    genero,
-    duracion,
-    clasificacion,
-    director,
-    reparto,
-    valoracion,
-    imagen,
-    sinopsis
-  };
-
-  // Guardar en localStorage
-  const contenidoAdmin = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
-  contenidoAdmin.push(nuevo);
-  localStorage.setItem("contenidoAdmin", JSON.stringify(contenidoAdmin));
-
-  // También lo agregamos temporalmente a DB para que se vea de inmediato
-  if (tipo === "cine") {
-    DB.peliculas.push(nuevo);
-  } else {
-    DB.obras.push(nuevo);
-  }
-
-  alert("Contenido agregado correctamente.");
-  e.target.reset();
-  document.getElementById("valoracionContenido").value = 0;
-
-  // Actualizar todo
-  cargarSelects();
-  actualizarContadores();
-  mostrarContenidoAdmin();
-}
-
-// ======================================================
-// Agregar nueva función
-// ======================================================
-function agregarFuncion(e) {
-  e.preventDefault();
-
-  const contenidoId = parseInt(document.getElementById("contenidoFuncion").value);
-  const tipo = document.getElementById("tipoFuncion").value;
-  const fecha = document.getElementById("fechaFuncion").value;
-  const hora = document.getElementById("horaFuncion").value;
-  const salaId = document.getElementById("salaFuncion").value;
-
-  if (!contenidoId || !fecha || !hora || !salaId) {
-    alert("Por favor completa todos los campos de la función.");
-    return;
-  }
-
-  const nuevaFuncion = {
-    id: Date.now(),
-    contenidoId,
-    tipo,
-    salaId,
-    fecha,
-    hora
-  };
-
-  // Guardar en localStorage
-  const funcionesAdmin = JSON.parse(localStorage.getItem("funcionesAdmin") || "[]");
-  funcionesAdmin.push(nuevaFuncion);
-  localStorage.setItem("funcionesAdmin", JSON.stringify(funcionesAdmin));
-
-  // Agregar también a DB
-  DB.funciones.push(nuevaFuncion);
-
-  alert("Función agregada correctamente.");
-  e.target.reset();
-
-  actualizarContadores();
-  mostrarFuncionesAdmin();
-}
-
-// ======================================================
-// Actualizar contadores
-// ======================================================
-function actualizarContadores() {
-  const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-  const entradas = JSON.parse(localStorage.getItem("entradas") || "[]");
-  const comentarios = JSON.parse(localStorage.getItem("comentarios") || "[]");
-  const contenidoAdmin = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
-
-  document.getElementById("totalUsuarios").textContent = usuarios.length;
-  document.getElementById("totalEntradas").textContent = entradas.length;
-  document.getElementById("totalComentarios").textContent = comentarios.length;
-  document.getElementById("totalContenidoAdmin").textContent = contenidoAdmin.length;
-}
-
-// ======================================================
-// Mostrar contenido agregado por el admin
-// ======================================================
-function mostrarContenidoAdmin() {
-  const contenedor = document.getElementById("listaContenidoAdmin");
-  if (!contenedor) return;
-
-  const contenidoAdmin = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
-
-  if (contenidoAdmin.length === 0) {
-    contenedor.innerHTML = `<p class="text-secondary">Aún no has agregado contenido.</p>`;
-    return;
-  }
-
-  contenedor.innerHTML = contenidoAdmin.map(item => `
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card bg-black border-secondary h-100">
-        <img src="${item.imagen}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="${item.titulo}">
+  // ----- COMPRAS -----
+  function renderCompras() {
+    const lista = document.getElementById("listaCompras");
+    if (!lista) return;
+    const historial = JSON.parse(localStorage.getItem("historialCompras") || "[]").slice().reverse();
+    if (!historial.length) {
+      lista.innerHTML = `<p class="text-secondary">No hay compras registradas.</p>`;
+      return;
+    }
+    lista.innerHTML = historial.map(t => `
+      <div class="card border-custom bg-card mb-2">
         <div class="card-body">
-          <span class="badge ${item.tipo === 'cine' ? 'bg-danger' : 'bg-primary'} mb-2">
-            ${item.tipo === 'cine' ? 'Película' : 'Teatro'}
-          </span>
-          <h5 class="card-title">${item.titulo}</h5>
-          <p class="small text-secondary mb-1">${item.genero} • ${item.duracion}</p>
-          <p class="small text-secondary">${item.clasificacion} • ⭐ ${item.valoracion}</p>
+          <div class="d-flex justify-content-between flex-wrap gap-2">
+            <div>
+              <span class="badge bg-danger">${t.tipo || "cine"}</span>
+              <strong class="ms-1">${t.titulo}</strong>
+              <p class="small text-secondary mb-0">${t.fecha} ${t.hora} · ${t.cliente || ""} · ${t.email || ""}</p>
+              <p class="small mb-0">Butacas: ${(t.asientos || []).join(", ")} · Ticket: ${t.idTicket}</p>
+            </div>
+            <strong class="text-success">$${Number(t.total || 0).toLocaleString("es-CL")}</strong>
+          </div>
         </div>
       </div>
-    </div>
-  `).join("");
-}
-
-// ======================================================
-// Mostrar funciones agregadas
-// ======================================================
-function mostrarFuncionesAdmin() {
-  const contenedor = document.getElementById("listaFuncionesAdmin");
-  if (!contenedor) return;
-
-  const funcionesAdmin = JSON.parse(localStorage.getItem("funcionesAdmin") || "[]");
-
-  if (funcionesAdmin.length === 0) {
-    contenedor.innerHTML = `<p class="text-secondary">Aún no has agregado funciones.</p>`;
-    return;
+    `).join("");
   }
 
-  // Combinar con las funciones originales para mostrar títulos
-  const todoContenido = [
-    ...(DB.peliculas || []),
-    ...(DB.obras || []),
-    ...JSON.parse(localStorage.getItem("contenidoAdmin") || "[]")
-  ];
+  // Para que detalle/peliculas vean funciones admin, fusionar en runtime no es global;
+  // opcional: exponer helper. Las páginas ya leen contenidoAdmin.
+  // Fusionar funciones admin en una copia usable:
+  window.getFuncionesCompletas = function () {
+    return todasFunciones();
+  };
 
-  contenedor.innerHTML = `
-    <div class="table-responsive">
-      <table class="table table-dark table-striped">
-        <thead>
-          <tr>
-            <th>Contenido</th>
-            <th>Tipo</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Sala</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${funcionesAdmin.map(f => {
-            const contenido = todoContenido.find(c => c.id === f.contenidoId);
-            const sala = (DB.salas || []).find(s => s.id === f.salaId);
-            return `
-              <tr>
-                <td>${contenido ? contenido.titulo : "Desconocido"}</td>
-                <td>${f.tipo === "cine" ? "Película" : "Teatro"}</td>
-                <td>${f.fecha}</td>
-                <td>${f.hora}</td>
-                <td>${sala ? sala.nombre : f.salaId}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
+  // Init
+  renderContenido();
+  llenarSelectContenido();
+  llenarSalas();
+  renderFunciones();
+  renderCompras();
 
-// ======================================================
-// Mostrar compras recientes
-// ======================================================
-function mostrarCompras() {
-  const contenedor = document.getElementById("listaCompras");
-  if (!contenedor) return;
-
-  const entradas = JSON.parse(localStorage.getItem("entradas") || "[]");
-
-  if (entradas.length === 0) {
-    contenedor.innerHTML = `<p class="text-secondary">No hay compras registradas todavía.</p>`;
-    return;
-  }
-
-  // Mostrar las últimas 10
-  const ultimas = entradas.slice(-10).reverse();
-
-  contenedor.innerHTML = `
-    <div class="table-responsive">
-      <table class="table table-dark table-hover">
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Contenido</th>
-            <th>Fecha</th>
-            <th>Butacas</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${ultimas.map(e => `
-            <tr>
-              <td>${e.usuario || "Anónimo"}</td>
-              <td>${e.titulo || "-"}</td>
-              <td>${e.fechaCompra || e.fecha || "-"}</td>
-              <td>${e.butacas ? e.butacas.join(", ") : "-"}</td>
-              <td>$${e.total || 0}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
+  // Al cambiar de tab, refrescar compras
+  document.querySelectorAll('#adminTabs button[data-bs-toggle="tab"]').forEach(btn => {
+    btn.addEventListener("shown.bs.tab", (e) => {
+      if (e.target.getAttribute("data-bs-target") === "#tabCompras") renderCompras();
+      if (e.target.getAttribute("data-bs-target") === "#tabFunciones") renderFunciones();
+    });
+  });
+});
