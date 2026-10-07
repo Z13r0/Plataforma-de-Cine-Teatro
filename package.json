@@ -1,24 +1,17 @@
 {
-  "name": "plataforma-de-cine-teatro",
+  "name": "plataforma-cine-teatro",
   "version": "1.0.0",
-  "description": "[![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)",
-  "main": "index.js",
+  "description": "Prototipo académico Cine & Teatro - Duoc UC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "karma start karma.conf.js --single-run",
+    "test:watch": "karma start karma.conf.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Z13r0/Plataforma-de-Cine-Teatro.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Z13r0/Plataforma-de-Cine-Teatro/issues"
-  },
-  "homepage": "https://github.com/Z13r0/Plataforma-de-Cine-Teatro#readme",
-  "dependencies": {
-    "bootstrap": "^5.3.8"
+  "devDependencies": {
+    "jasmine-core": "^5.1.2",
+    "karma": "^6.4.3",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-jasmine": "^5.1.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
+    "karma-coverage": "^2.2.1"
   }
 }

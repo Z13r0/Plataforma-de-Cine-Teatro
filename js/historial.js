@@ -1,56 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Se busca el contenedor
-  const contenedor = document.getElementById("contenedorHistorial");
+  const cont = document.getElementById("contenedorHistorial");
+  if (!cont) return;
 
-  // Se recupera el historial
-  const historial = JSON.parse(localStorage.getItem("historialCompras") || "[]");
+  const historial = JSON.parse(localStorage.getItem("historialCompras") || "[]").slice().reverse();
 
-  // Si no hay historial
-  if (historial.length === 0) {
-    contenedor.innerHTML = `
-      <div class="alert alert-info">
-        No tienes compras registradas.
-      </div>
-    `;
+  if (!historial.length) {
+    cont.innerHTML = `
+      <div class="card border-custom bg-card p-5 text-center">
+        <p class="text-secondary mb-3">Aún no tienes compras.</p>
+        <a href="peliculas.html" class="btn btn-danger">Ver cartelera</a>
+      </div>`;
     return;
   }
 
-  // Se muestra de más nuevo a viejo
-  historial
-    .slice()
-    .reverse()
-    .forEach((ticket) => {
-      // Creamos una tarjeta
-      contenedor.innerHTML += `
-        <div class="card bg-black border-secondary text-light mb-3">
-          <div class="card-body">
-            <h4 class="text-danger">${ticket.titulo}</h4>
-
-            <p class="mb-1">
-              <strong>Ticket:</strong> ${ticket.idTicket}
-            </p>
-
-            <p class="mb-1">
-              <strong>Fecha compra:</strong> ${ticket.fechaCompra}
-            </p>
-
-            <p class="mb-1">
-              <strong>Función:</strong> ${ticket.fecha} - ${ticket.hora}
-            </p>
-
-            <p class="mb-1">
-              <strong>Butacas:</strong> ${ticket.asientos.join(", ")}
-            </p>
-
-            <p class="text-success fw-bold">
-              $${ticket.total.toLocaleString("es-CL")}
-            </p>
-
-            <a href="entradas.html?ticketId=${ticket.idTicket}" class="btn btn-outline-danger">
-              Ver entrada
-            </a>
-          </div>
+  cont.innerHTML = historial.map(t => `
+    <div class="card border-custom bg-card mb-3 card-hover">
+      <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <span class="badge bg-danger mb-1">${t.tipo === "teatro" ? "TEATRO" : "CINE"}</span>
+          <h5 class="fw-bold mb-1">${t.titulo}</h5>
+          <p class="small text-secondary mb-0">${t.fecha} · ${t.hora} · ${t.sala || ""}</p>
+          <p class="small mb-0">Butacas: ${(t.asientos || []).join(", ")}</p>
         </div>
-      `;
-    });
+        <div class="text-end">
+          <p class="fs-5 text-success fw-bold mb-2">$${Number(t.total).toLocaleString("es-CL")}</p>
+          <a href="entradas.html?ticketId=${t.idTicket}" class="btn btn-outline-light btn-sm">Ver entrada</a>
+        </div>
+      </div>
+    </div>
+  `).join("");
 });

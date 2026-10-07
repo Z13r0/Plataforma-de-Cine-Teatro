@@ -1,65 +1,353 @@
+/* =====================================================
+   Cine & Teatro - Estilos globales + tema + Cinemark UI
+   ===================================================== */
 
-/* Variables de Color del Proyecto */
 :root {
-    --color-cine: #dc3545;       /* Rojo característico para Cine */
-    --color-teatro: #0d6efd;     /* Azul característico para Teatro */
-    --bg-card: #1e1e1e;          /* Fondo oscuro para Cards */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-elevated: #1a1a1a;
+  --bg-card: #1c1c1c;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-muted: #808080;
+  --accent: #e50914;
+  --accent-hover: #f40612;
+  --border: #2a2a2a;
+  --navbar-bg: rgba(10, 10, 10, 0.92);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --radius: 12px;
+  --transition: 0.25s ease;
 }
 
-/* Hero Banner Personalizado */
-.hero-banner {
-    background: linear-gradient(135deg, #111111 0%, #2b080c 50%, #111111 100%);
-    border: 1px solid rgba(220, 53, 69, 0.3);
+[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #141414;
+  --text-secondary: #4a4a4a;
+  --text-muted: #6b6b6b;
+  --accent: #e50914;
+  --accent-hover: #b20710;
+  --border: #e0e0e0;
+  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
 
-/* HOVER Y ANIMACIONES EN CARDS */
-.card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.card-hover:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 20px rgba(220, 53, 69, 0.25) !important;
-    border-color: var(--color-cine) !important;
+html {
+  scroll-behavior: smooth;
 }
 
-/* IMÁGENES Y OBJETOS */
-.card-img-top {
-    border-top-left-radius: calc(0.375rem - 1px);
-    border-top-right-radius: calc(0.375rem - 1px);
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  transition: background-color var(--transition), color var(--transition);
 }
 
-/* AJUSTES GENERALES DE NAVEGACIÓN */
-.navbar-brand:hover {
-    opacity: 0.9;
+main {
+  flex: 1;
 }
 
-.nav-link {
-    transition: color 0.2s ease-in-out;
+a {
+  color: var(--accent);
+  transition: color var(--transition);
+}
+a:hover {
+  color: var(--accent-hover);
 }
 
-.nav-link:hover {
-    color: var(--color-cine) !important;
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+.text-muted {
+  color: var(--text-muted) !important;
 }
 
-/* Estilos extra para las butacas */
+/* ========== NAVBAR (sticky estilo Cinemark) ========== */
+.navbar,
+.navbar-cinemark {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: var(--navbar-bg) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow var(--transition), background var(--transition);
+}
 
-.butaca {
-  transition: all 0.2s ease;
+.navbar.is-scrolled,
+.navbar-cinemark.is-scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .navbar.is-scrolled,
+[data-theme="light"] .navbar-cinemark.is-scrolled {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-brand,
+.navbar-cinemark .navbar-brand {
+  color: var(--text-primary) !important;
+}
+
+.navbar .nav-link,
+.navbar-cinemark .nav-link {
+  color: var(--text-secondary) !important;
   font-weight: 500;
+  position: relative;
+  padding: 0.5rem 0.85rem !important;
 }
 
-.butaca:hover:not(:disabled) {
-  transform: scale(1.1);
-  z-index: 1;
+.navbar .nav-link:hover,
+.navbar .nav-link.active,
+.navbar-cinemark .nav-link:hover,
+.navbar-cinemark .nav-link.active {
+  color: var(--text-primary) !important;
 }
 
-/* Espaciado entre filas */
-#contenedorButacas {
-  gap: 0.6rem !important;
+.navbar .nav-link.active::after,
+.navbar-cinemark .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0.85rem;
+  right: 0.85rem;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
 }
 
+.navbar-toggler {
+  border-color: var(--border);
+}
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+[data-theme="light"] .navbar-toggler-icon {
+  filter: none;
+}
+
+/* ========== BOTONES ========== */
+.btn-danger {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.btn-danger:hover {
+  background-color: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
+}
+
+.btn-outline-light {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+.btn-outline-light:hover {
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--text-secondary) !important;
+}
+
+[data-theme="light"] .btn-outline-light {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+/* ========== CARDS ========== */
+.card,
+.bg-card {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary);
+}
+
+.border-custom {
+  border-color: var(--border) !important;
+}
+
+.card-hover {
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Poster cards (cartelera tipo Cinemark) */
+.poster-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+  height: 100%;
+}
+.poster-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+.poster-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-elevated);
+}
+.poster-card .poster-meta {
+  padding: 0.75rem;
+}
+.badge-formato {
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+}
+
+/* ========== HERO (siempre oscuro / texto legible) ========== */
+.hero-banner {
+  background: linear-gradient(135deg, #1a0508 0%, #2b080c 50%, #1a0508 100%) !important;
+  color: #fff !important;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+.hero-banner h1,
+.hero-banner p,
+.hero-banner .badge,
+.hero-banner span {
+  color: #fff !important;
+}
+
+[data-theme="light"] .hero-banner {
+  background: linear-gradient(135deg, #1a0508 0%, #2b080c 50%, #1a0508 100%) !important;
+  color: #fff !important;
+}
+
+/* ========== SECCIONES ========== */
+.section-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* ========== FILTROS ========== */
+.filtros-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--bg-elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--bg-elevated) !important;
+  border-color: var(--accent) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
+}
 .form-control::placeholder {
-    color: antiquewhite;
-    opacity: 0.4;
+  color: var(--text-muted);
+}
+
+/* ========== COMPRA RÁPIDA ========== */
+.btn-compra-rapida {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1040;
+  border-radius: 999px;
+  padding: 0.75rem 1.35rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(229, 9, 20, 0.45);
+}
+
+.offcanvas-compra {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary);
+  border-left: 1px solid var(--border);
+}
+.offcanvas-compra .form-select,
+.offcanvas-compra .form-control {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.offcanvas-compra .btn-close {
+  filter: invert(1);
+}
+[data-theme="light"] .offcanvas-compra .btn-close {
+  filter: none;
+}
+
+/* ========== FORMATOS EXPERIENCIA ========== */
+.formato-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.formato-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ========== FOOTER ========== */
+footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+/* ========== BUTACAS ========== */
+.butaca {
+  min-width: 36px;
+  transition: transform 0.15s ease;
+}
+.butaca:not(:disabled):hover {
+  transform: scale(1.08);
+}
+
+/* ========== UTILIDADES ========== */
+.bg-elevated {
+  background-color: var(--bg-elevated) !important;
+}
+
+hr.border-custom {
+  border-color: var(--border) !important;
+  opacity: 1;
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

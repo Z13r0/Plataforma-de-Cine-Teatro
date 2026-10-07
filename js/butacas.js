@@ -1,134 +1,107 @@
-// Archivo: js/butacas.js
-// Lógica de selección de butacas mejorada
-
 document.addEventListener("DOMContentLoaded", () => {
-
-  // 1. Obtenemos los datos que vienen por la URL
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get("id"));
-  const tipo = params.get("tipo");                 // "cine" o "teatro"
+  const tipo = params.get("tipo");
   const funcionId = parseInt(params.get("funcionId"));
 
-  // 2. Buscamos la película u obra
   const lista = tipo === "teatro" ? DB.obras : DB.peliculas;
-  const contenido = lista.find(item => item.id === id);
+  const contenido = lista.find(i => i.id === id);
+  const funcion = DB.funciones.find(i => i.id === funcionId);
+  const sala = funcion ? DB.salas.find(s => s.id === funcion.salaId) : null;
 
-  // 3. Buscamos la función y la sala
-  const funcion = DB.funciones.find(item => item.id === funcionId);
-  let sala = null;
-  if (funcion) {
-    sala = DB.salas.find(item => item.id === funcion.salaId);
-  }
-
-  // 4. Validación: si falta algún dato, mostramos error
   if (!contenido || !funcion || !sala) {
-    alert("No se encontró la función seleccionada.");
+    alert("No se encontró la función.");
     window.location.href = "index.html";
     return;
   }
 
-  // 5. Mostramos el título y detalles en la página
   document.getElementById("tituloSeleccion").textContent = contenido.titulo;
   document.getElementById("detallesFuncion").textContent =
-    `Fecha: ${funcion.fecha} | Hora: ${funcion.hora} | Sala: ${sala.nombre}`;
+    `${funcion.fecha} · ${funcion.hora} · ${sala.nombre}`;
 
-  // 6. Configuración del mapa de butacas
-  const filas = 6;                // Cantidad de filas (A, B, C...)
-  const columnas = 8;             // Butacas por fila
-  const precio = sala.precioBase; // Precio por butaca
-
-  // Array donde guardaremos los números de las butacas seleccionadas
+  const precio = sala.precioBase;
   const asientosSeleccionados = [];
+  const letras = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const columnas = 10;
+  const ocupadas = [3, 7, 12, 18, 25, 33, 41, 48];
 
-  // 7. Generamos el mapa de butacas
   const contenedor = document.getElementById("contenedorButacas");
-  contenedor.innerHTML = ""; // Limpiamos por si acaso
+  contenedor.innerHTML = "";
 
-  // Letras de las filas
-  const letras = ["A", "B", "C", "D", "E", "F"];
-
-  // Creamos cada fila
-  for (let f = 0; f < filas; f++) {
-    // Contenedor de la fila
+  for (let f = 0; f < letras.length; f++) {
     const filaDiv = document.createElement("div");
-    filaDiv.className = "d-flex align-items-center gap-2";
+    filaDiv.className = "d-flex align-items-center gap-1 mb-1 justify-content-center";
 
-    // Letra de la fila (A, B, C...)
     const letra = document.createElement("span");
     letra.className = "text-secondary fw-bold me-2";
-    letra.style.width = "20px";
+    letra.style.width = "18px";
     letra.textContent = letras[f];
     filaDiv.appendChild(letra);
 
-    // Creamos las butacas de esta fila
     for (let c = 1; c <= columnas; c++) {
-      const numeroButaca = f * columnas + c; // Número único de la butaca
-
+      const codigo = letras[f] + c;
+      const num = f * columnas + c;
       const boton = document.createElement("button");
-      boton.className = "btn btn-outline-light btn-sm butaca";
-      boton.style.width = "42px";
-      boton.style.height = "42px";
-      boton.textContent = c; // Mostramos solo el número dentro de la fila
-      boton.dataset.numero = numeroButaca; // Guardamos el número real
+      boton.type = "button";
+      boton.className = "btn btn-sm butaca";
+      boton.style.width = "36px";
+      boton.style.height = "36px";
+      boton.style.fontSize = "11px";
+      boton.textContent = c;
+      boton.dataset.codigo = codigo;
 
-      // Simulamos algunas butacas ocupadas (para que se vea real)
-      const ocupadas = [3, 7, 12, 18, 25, 33]; // Puedes cambiar estos números
-      if (ocupadas.includes(numeroButaca)) {
-        boton.classList.remove("btn-outline-light");
+      if (ocupadas.includes(num)) {
         boton.classList.add("btn-secondary");
-        boton.disabled = true; // No se puede hacer clic
+        boton.disabled = true;
       } else {
-        // Evento para seleccionar / deseleccionar
+        boton.classList.add("btn-outline-light");
         boton.addEventListener("click", () => {
-          const numero = parseInt(boton.dataset.numero);
-          const indice = asientosSeleccionados.indexOf(numero);
-
-          if (indice === -1) {
-            // Seleccionar
-            asientosSeleccionados.push(numero);
+          const idx = asientosSeleccionados.indexOf(codigo);
+          if (idx === -1) {
+            asientosSeleccionados.push(codigo);
             boton.classList.remove("btn-outline-light");
             boton.classList.add("btn-danger");
           } else {
-            // Deseleccionar
-            asientosSeleccionados.splice(indice, 1);
+            asientosSeleccionados.splice(idx, 1);
             boton.classList.remove("btn-danger");
             boton.classList.add("btn-outline-light");
           }
-
-          // Actualizamos el resumen (cantidad y total)
-          actualizarResumen();
+          actualizar();
         });
       }
-
       filaDiv.appendChild(boton);
     }
-
     contenedor.appendChild(filaDiv);
   }
 
-  // 8. Función que actualiza la cantidad y el precio total
-  function actualizarResumen() {
+  function actualizar() {
     document.getElementById("cantidadSeleccionadas").textContent = asientosSeleccionados.length;
-    const total = asientosSeleccionados.length * precio;
-    document.getElementById("total").textContent = total.toLocaleString("es-CL");
+    const totalEntradas = asientosSeleccionados.length * precio;
+    const cargo = (DB.cargoServicio || 700) * asientosSeleccionados.length;
+    document.getElementById("total").textContent = (totalEntradas + cargo).toLocaleString("es-CL");
+
+    // Actualizar carrito en vivo
+    const cart = Carrito.get();
+    cart.butacas = [...asientosSeleccionados];
+    cart.entradas = [{
+      nombre: "General",
+      cantidad: asientosSeleccionados.length,
+      precio: precio
+    }];
+    cart.cargoServicio = cargo;
+    Carrito.save(cart);
+    if (typeof Carrito.renderSidebar === "function") Carrito.renderSidebar();
   }
 
-  // 9. Botón Continuar → envía los datos a compra.html
   document.getElementById("btnContinuar").addEventListener("click", () => {
     if (asientosSeleccionados.length === 0) {
-      alert("Debes seleccionar al menos una butaca.");
+      alert("Selecciona al menos una butaca.");
       return;
     }
-
-    const total = asientosSeleccionados.length * precio;
-
-    // Creamos la URL con todos los datos necesarios
-    const url = `compra.html?id=${id}&tipo=${tipo}&funcionId=${funcionId}` +
-                `&hora=${encodeURIComponent(funcion.hora)}` +
-                `&asientos=${asientosSeleccionados.join(",")}` +
-                `&total=${total}`;
-
-    window.location.href = url;
+    // Ir a confitería
+    window.location.href = "confiteria.html";
   });
 
+  // Sidebar si existe
+  if (document.getElementById("resumenSidebar")) Carrito.renderSidebar();
 });

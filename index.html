@@ -1,225 +1,264 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cine & Teatro</title>
-
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cine & Teatro | Inicio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-
-<body class="bg-dark text-light">
-
-    <!-- Navbar -->
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top border-bottom border-secondary">
-            <div class="container">
-
-                <!-- Logo -->
-                <a class="navbar-brand fw-bold text-danger d-flex align-items-center gap-2" href="index.html">
-                    <i class="bi bi-film fs-3"></i>
-                    <span>Cine & Teatro</span>
-                </a>
-
-                <!-- Botón menú móvil -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Menú -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="index.html">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="peliculas.html">Películas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="obras.html">Teatro</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="comunidad.html">Comunidad</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="historial.html">Historial</a>
-                        </li>
-                    </ul>
-
-                    <!-- ÁREA DE SESIÓN (controlada por app.js) -->
-                    <div id="authArea" class="d-flex align-items-center gap-2">
-                        <!-- Aquí se cargan los botones automáticamente -->
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Contenido Principal -->
-    <main class="container py-4">
-
-        <!-- Hero -->
-        <section class="p-4 p-md-5 mb-4 rounded-3 bg-gradient text-white text-center text-md-start position-relative overflow-hidden shadow hero-banner">
-            <div class="row align-items-center py-2">
-                <div class="col-lg-8">
-                    <span class="badge bg-danger mb-2 px-3 py-2 fs-6">Temporada 2026</span>
-                    <h1 class="display-4 fw-bold">Bienvenido a Cine & Teatro</h1>
-                    <p class="fs-5 text-light opacity-75">
-                        Vive la magia del séptimo arte y las mejores obras teatrales en un solo lugar. Reserva tus entradas en tiempo real.
-                    </p>
-                    <div class="d-flex gap-3 justify-content-center justify-content-md-start mt-3">
-                        <a href="peliculas.html" class="btn btn-danger btn-lg px-4 fw-semibold">
-                            <i class="bi bi-film me-1"></i> Ver Películas
-                        </a>
-                        <a href="obras.html" class="btn btn-outline-light btn-lg px-4">
-                            <i class="bi bi-masks me-1"></i> Ver Obras
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Destacados -->
-        <section class="mb-5">
-            <h2 class="h3 fw-bold mb-3 border-start border-4 border-danger ps-2">Estrenos Destacados</h2>
-            
-            <div id="carruselDestacados" class="carousel slide shadow-lg rounded-3 overflow-hidden" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="0" class="active"></button>
-                    <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="1"></button>
-                </div>
-
-                <div class="carousel-inner">
-                    <div class="carousel-item active" data-bs-interval="4000">
-                        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 380px;" alt="Cine">
-                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
-                            <span class="badge bg-warning text-dark">Estreno de Cine</span>
-                            <h3 class="fw-bold">Sci-Fi Odyssey 2026</h3>
-                            <p class="mb-1">Una aventura intergaláctica sin precedentes en formato IMAX.</p>
-                            <a href="detalle.html" class="btn btn-danger btn-sm">Ver Funciones</a>
-                        </div>
-                    </div>
-
-                    <div class="carousel-item" data-bs-interval="4000">
-                        <img src="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=1200&auto=format&fit=crop" class="d-block w-100 object-fit-cover" style="height: 380px;" alt="Teatro">
-                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
-                            <span class="badge bg-primary">Gran Obra de Teatro</span>
-                            <h3 class="fw-bold">El Fantasma de la Ópera</h3>
-                            <p class="mb-1">La obra clásica vuelve al escenario principal en vivo.</p>
-                            <a href="detalle.html" class="btn btn-primary btn-sm">Reservar Butacas</a>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#carruselDestacados" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carruselDestacados" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-            </div>
-        </section>
-
-        <!-- En Cartelera -->
-        <section>
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="h3 fw-bold mb-0 border-start border-4 border-danger ps-2">En Cartelera</h2>
-                <a href="peliculas.html" class="btn btn-link text-danger text-decoration-none fw-semibold">
-                    Ver Catálogo Completo <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            <div class="row g-4">
-                <!-- Card 1 -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Cine</span>
-                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Película 1">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-truncate">Inception Matrix</h5>
-                            <p class="card-text text-secondary small mb-2">Acción / Ciencia Ficción</p>
-                            <div class="d-flex justify-content-between align-items-center small mb-3">
-                                <span><i class="bi bi-clock text-danger"></i> 2h 46min</span>
-                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.8</span>
-                            </div>
-                            <a href="detalle.html" class="btn btn-outline-danger w-100 mt-auto">Ver Detalle</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger">Cine</span>
-                        <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Película 2">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-truncate">Misterio en la Noche</h5>
-                            <p class="card-text text-secondary small mb-2">Suspenso / Thriller</p>
-                            <div class="d-flex justify-content-between align-items-center small mb-3">
-                                <span><i class="bi bi-clock text-danger"></i> 1h 50min</span>
-                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.5</span>
-                            </div>
-                            <a href="detalle.html" class="btn btn-outline-danger w-100 mt-auto">Ver Detalle</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                        <span class="position-absolute top-0 start-0 m-2 badge bg-primary">Teatro</span>
-                        <img src="https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Teatro 1">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-truncate">Hamlet Clásico</h5>
-                            <p class="card-text text-secondary small mb-2">Drama Teatral</p>
-                            <div class="d-flex justify-content-between align-items-center small mb-3">
-                                <span><i class="bi bi-clock text-primary"></i> 2h</span>
-                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.9</span>
-                            </div>
-                            <a href="detalle.html" class="btn btn-outline-primary w-100 mt-auto">Ver Detalle</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
-                        <span class="position-absolute top-0 start-0 m-2 badge bg-primary">Teatro</span>
-                        <img src="https://images.unsplash.com/photo-1503095396549-807759245b35?q=80&w=400&fit=crop" class="card-img-top object-fit-cover" style="height: 280px;" alt="Teatro 2">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-truncate">Noche de Comedia</h5>
-                            <p class="card-text text-secondary small mb-2">Comedia / Improv</p>
-                            <div class="d-flex justify-content-between align-items-center small mb-3">
-                                <span><i class="bi bi-clock text-primary"></i> 1h 30min</span>
-                                <span class="badge bg-dark border border-secondary text-warning">⭐ 4.6</span>
-                            </div>
-                            <a href="detalle.html" class="btn btn-outline-primary w-100 mt-auto">Ver Detalle</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-black text-secondary py-4 border-top border-secondary mt-5">
-        <div class="container text-center">
-            <p class="mb-0">&copy; 2026 Cine & Teatro - Prototipo de Web Interactivo</p>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-cinemark" id="mainNavbar">
+      <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="index.html">
+          <i class="bi bi-film fs-3"></i><span>Cine & Teatro</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link active" href="index.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="peliculas.html">Películas</a></li>
+            <li class="nav-item"><a class="nav-link" href="obras.html">Teatro</a></li>
+            <li class="nav-item"><a class="nav-link" href="comunidad.html">Comunidad</a></li>
+            <li class="nav-item"><a class="nav-link" href="historial.html">Historial</a></li>
+          </ul>
+          <div id="authArea" class="d-flex align-items-center gap-2"></div>
         </div>
-    </footer>
+      </div>
+    </nav>
+  </header>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/datos.js"></script>
-    <script src="js/app.js"></script>
+  <main class="container py-4">
+    <!-- Hero -->
+    <section class="p-4 p-md-5 mb-5 hero-banner text-center text-md-start shadow">
+      <div class="row align-items-center py-3">
+        <div class="col-lg-8">
+          <span class="badge bg-danger mb-3 px-3 py-2">Temporada 2026</span>
+          <h1 class="display-4 fw-bold mb-3">Bienvenido a Cine & Teatro</h1>
+          <p class="fs-5 opacity-75 mb-4">Cartelera de cine y teatro. Reserva en minutos.</p>
+          <div class="d-flex gap-3 justify-content-center justify-content-md-start flex-wrap">
+            <a href="peliculas.html" class="btn btn-danger btn-lg px-4"><i class="bi bi-film me-2"></i>Películas</a>
+            <a href="obras.html" class="btn btn-outline-light btn-lg px-4"><i class="bi bi-masks me-2"></i>Teatro</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- Carrusel destacados -->
+    <section class="mb-5">
+      <h2 class="h3 section-title mb-4">Destacados</h2>
+      <div id="carouselDestacados" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+        <div class="carousel-inner rounded overflow-hidden border border-custom" id="carouselInner" style="min-height:280px"></div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselDestacados" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselDestacados" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Promociones -->
+    <section class="mb-5">
+      <h2 class="h3 section-title mb-4">Promociones</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card card-hover h-100 border-custom bg-card">
+            <div class="card-body">
+              <span class="badge bg-danger mb-2">2x1</span>
+              <h5 class="fw-bold">2x1 los martes</h5>
+              <p class="text-secondary small mb-0">En funciones seleccionadas. No acumulable.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-hover h-100 border-custom bg-card">
+            <div class="card-body">
+              <span class="badge bg-warning text-dark mb-2">Confitería</span>
+              <h5 class="fw-bold">15% en combos</h5>
+              <p class="text-secondary small mb-0">Al comprar entradas online.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card card-hover h-100 border-custom bg-card">
+            <div class="card-body">
+              <span class="badge bg-primary mb-2">Teatro</span>
+              <h5 class="fw-bold">Musicales en temporada</h5>
+              <p class="text-secondary small mb-0">El Fantasma de la Ópera y más.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Próximos estrenos -->
+    <section class="mb-5">
+      <h2 class="h3 section-title mb-4">Próximos estrenos</h2>
+      <div class="row g-3" id="gridProximos"></div>
+    </section>
+
+    <!-- Formatos -->
+    <section class="mb-5">
+      <h2 class="h3 section-title mb-2">Descubre nuestros formatos</h2>
+      <p class="text-secondary mb-4">Vive una experiencia única en sala.</p>
+      <div class="row g-4" id="gridFormatos"></div>
+    </section>
+
+    <!-- Cartelera -->
+    <section class="mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 section-title mb-0">Cartelera</h2>
+        <a href="peliculas.html" class="btn btn-link text-danger text-decoration-none fw-semibold">Ver todo</a>
+      </div>
+      <div class="row g-3" id="gridCartelera"></div>
+      <div class="text-center mt-4">
+        <a href="peliculas.html" class="btn btn-danger btn-lg px-5">Ver más</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-4 mt-auto">
+    <div class="container text-center">
+      <p class="mb-0 small">&copy; 2026 Cine & Teatro · Prototipo académico</p>
+    </div>
+  </footer>
+
+  <!-- Compra rápida -->
+  <button class="btn btn-danger btn-compra-rapida" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCompraRapida">
+    <i class="bi bi-lightning-fill"></i> Compra rápida
+  </button>
+  <div class="offcanvas offcanvas-end offcanvas-compra" tabindex="-1" id="offcanvasCompraRapida">
+    <div class="offcanvas-header border-bottom border-secondary">
+      <h5 class="offcanvas-title fw-bold">Compra rápida</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p class="text-secondary small mb-4">En pocos pasos obtén tu entrada.</p>
+      <div class="mb-3">
+        <label class="form-label">Película / Obra *</label>
+        <select id="crPelicula" class="form-select"></select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Fecha *</label>
+        <select id="crFecha" class="form-select" disabled></select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Formato *</label>
+        <select id="crFormato" class="form-select" disabled></select>
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Hora *</label>
+        <select id="crHora" class="form-select" disabled></select>
+      </div>
+      <button id="crBtnComprar" class="btn btn-danger w-100 fw-bold" disabled>Comprar</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/datos.js"></script>
+  <script src="js/carrito.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/compra-rapida.js"></script>
+  <script>
+    window.addEventListener("scroll", () => {
+      document.getElementById("mainNavbar")?.classList.toggle("is-scrolled", window.scrollY > 10);
+    });
+
+    // Proximos estrenos, cartelera y carrusel destacados
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const prox = document.getElementById("gridProximos");
+      if (prox) {
+        [...DB.peliculas.filter(p => p.estado === "proximo"), ...DB.obras.filter(o => o.estado === "proximo")]
+          .forEach(p => {
+            prox.innerHTML += `
+              <div class="col-6 col-md-3 col-lg-2">
+                <div class="poster-card">
+                  <img src="${p.imagen}" alt="${p.titulo}" onerror="this.src='https://placehold.co/300x450/1a1a1a/666?text=Poster'">
+                  <div class="poster-meta">
+                    <h6 class="small fw-bold text-truncate mb-1">${p.titulo}</h6>
+                    <span class="badge bg-secondary">${p.clasificacion || "TBA"}</span>
+                    <p class="small text-secondary mb-0 mt-1">${p.fechaEstreno || p.anio || ""}</p>
+                  </div>
+                </div>
+              </div>`;
+          });
+      }
+
+      // Carrusel destacados (primeras de cartelera)
+      const destacados = DB.peliculas.filter(p => p.estado === "cartelera").slice(0, 5);
+      const inner = document.getElementById("carouselInner");
+      const indicators = document.getElementById("carouselIndicators");
+      if (inner && destacados.length) {
+        destacados.forEach((p, i) => {
+          indicators.innerHTML += `
+            <button type="button" data-bs-target="#carouselDestacados" data-bs-slide-to="${i}"
+              class="${i === 0 ? "active" : ""}" aria-label="Slide ${i + 1}"></button>`;
+          inner.innerHTML += `
+            <div class="carousel-item ${i === 0 ? "active" : ""}">
+              <div class="row g-0 align-items-stretch" style="background:var(--bg-card)">
+                <div class="col-md-4">
+                  <img src="${p.imagen}" class="w-100 h-100" style="object-fit:cover;min-height:280px"
+                      alt="${p.titulo}" onerror="this.src='https://placehold.co/400x600/1a1a1a/666?text=Poster'">
+                </div>
+                <div class="col-md-8 p-4 p-md-5 d-flex flex-column justify-content-center">
+                  <span class="badge bg-danger mb-2 align-self-start">Estreno en cartelera</span>
+                  <h3 class="fw-bold">${p.titulo}</h3>
+                  <p class="text-secondary">${p.sinopsis?.slice(0, 160) || ""}...</p>
+                  <p class="small mb-3">${(p.formatos || []).join(" · ")} · ${p.clasificacion}</p>
+                  <a href="detalle.html?id=${p.id}&tipo=cine" class="btn btn-danger align-self-start">Ver horarios</a>
+                </div>
+              </div>
+            </div>`;
+        });
+      }
+
+      // Formatos de experiencia
+
+      const form = document.getElementById("gridFormatos");
+      if (form && DB.formatosExperiencia) {
+        DB.formatosExperiencia.forEach(f => {
+          form.innerHTML += `
+            <div class="col-md-4">
+              <div class="formato-card">
+                <img src="${f.imagen}" alt="${f.nombre}">
+                <div class="p-3">
+                  <h5 class="fw-bold mb-1">${f.nombre}</h5>
+                  <p class="small text-secondary mb-0">${f.descripcion}</p>
+                </div>
+              </div>
+            </div>`;
+        });
+      }
+
+      // Cartelera (solo cine)
+
+      const cart = document.getElementById("gridCartelera");
+      if (cart) {
+        DB.peliculas.filter(p => p.estado === "cartelera").slice(0, 8).forEach(p => {
+          cart.innerHTML += `
+            <div class="col-6 col-md-3">
+              <a href="detalle.html?id=${p.id}&tipo=cine" class="text-decoration-none text-reset">
+                <div class="poster-card">
+                  <img src="${p.imagen}" alt="${p.titulo}" onerror="this.src='https://placehold.co/300x450/1a1a1a/666?text=Poster'">
+                  <div class="poster-meta">
+                    <h6 class="fw-bold text-truncate mb-1">${p.titulo}</h6>
+                    <span class="badge bg-danger">${p.clasificacion}</span>
+                    <div class="mt-1">${(p.formatos || []).map(f => `<span class="badge bg-secondary badge-formato me-1">${f}</span>`).join("")}</div>
+                  </div>
+                </div>
+              </a>
+            </div>`;
+        });
+      }
+    });
+  </script>
 </body>
 </html>

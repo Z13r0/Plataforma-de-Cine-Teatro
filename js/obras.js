@@ -1,95 +1,48 @@
-// Archivo: js/obras.js
-// Cartelera de Teatro
-
 document.addEventListener("DOMContentLoaded", () => {
   mostrarObras();
-
-  const inputBuscador = document.getElementById("inputBuscador");
-  const selectGenero = document.getElementById("selectGenero");
-  const selectClasificacion = document.getElementById("selectClasificacion");
-
-  if (inputBuscador) inputBuscador.addEventListener("input", aplicarFiltros);
-  if (selectGenero) selectGenero.addEventListener("change", aplicarFiltros);
-  if (selectClasificacion) selectClasificacion.addEventListener("change", aplicarFiltros);
+  ["inputBuscador", "selectGenero", "selectClasificacion", "selectAnio"].forEach(id => {
+    document.getElementById(id)?.addEventListener("input", aplicarFiltros);
+    document.getElementById(id)?.addEventListener("change", aplicarFiltros);
+  });
 });
 
-function obtenerColorClasificacion(clasificacion) {
-  switch (clasificacion) {
-    case "TE": return "bg-success";
-    case "TE+7": return "bg-info text-dark";
-    case "+14": return "bg-warning text-dark";
-    case "+18": return "bg-danger";
-    default: return "bg-secondary";
-  }
+function textoGenero(g) {
+  return Array.isArray(g) ? g.join(" · ") : (g || "");
 }
 
-function mostrarObras(listaObras = DB.obras) {
+function mostrarObras(lista) {
   const contenedor = document.getElementById("contenedorObras");
+  if (!contenedor) return;
 
-  if (!contenedor) {
-    console.error("No se encontró #contenedorObras");
-    return;
-  }
+  const admin = (JSON.parse(localStorage.getItem("contenidoAdmin")) || []).filter(i => i.tipo === "teatro");
+  let base = lista || [...DB.obras.filter(o => o.estado === "cartelera" || !o.estado), ...admin];
 
   contenedor.innerHTML = "";
-
-  if (!listaObras || listaObras.length === 0) {
-    contenedor.innerHTML = `
-      <div class="text-center text-white py-5">
-        <p class="fs-5">No se encontraron obras.</p>
-      </div>`;
+  if (!base.length) {
+    contenedor.innerHTML = `<div class="col-12 text-center py-5 text-secondary">No se encontraron obras.</div>`;
     return;
   }
 
-  listaObras.forEach((obra) => {
-    const funcionesObra = DB.funciones.filter(
-      (f) => Number(f.contenidoId) === Number(obra.id) && f.tipo === "teatro"
-    );
-
-    let botonesHorarios = "";
-    if (funcionesObra.length > 0) {
-      botonesHorarios = funcionesObra.map((f) => {
-        return `<a href="funciones.html?id=${obra.id}&tipo=teatro" class="btn btn-outline-danger btn-sm">${f.hora}</a>`;
-      }).join("");
-    } else {
-      botonesHorarios = `<span class="text-secondary small">Sin funciones disponibles</span>`;
-    }
-
-    const colorBadge = obtenerColorClasificacion(obra.clasificacion);
-
-    const tarjeta = `
-      <div class="card bg-black border-secondary overflow-hidden">
-        <div class="row g-0 align-items-center">
-          <div class="col-12 col-md-4 col-lg-3">
-            <img src="${obra.imagen}" alt="${obra.titulo}" class="img-fluid w-100" style="height: 230px; object-fit: cover;">
-          </div>
-          <div class="col-12 col-md-8 col-lg-9">
-            <div class="card-body p-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-              <div>
-                <span class="badge ${colorBadge} mb-2">${obra.clasificacion}</span>
-                <span class="badge bg-secondary mb-2 ms-1">${obra.genero}</span>
-                <h3 class="card-title fw-bold mb-1">${obra.titulo}</h3>
-                <p class="text-secondary small mb-2">
-                  <i class="bi bi-clock me-1"></i>${obra.duracion}
-                </p>
-                <p class="card-text text-light opacity-75 small mb-0" style="max-width: 520px;">
-                  ${obra.sinopsis}
-                </p>
+  base.forEach(o => {
+    const formatos = (o.formatos || []).map(f => `<span class="badge bg-secondary badge-formato me-1">${f}</span>`).join("");
+    contenedor.innerHTML += `
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="detalle.html?id=${o.id}&tipo=teatro" class="text-decoration-none text-reset">
+          <div class="poster-card">
+            <img src="${o.imagen}" alt="${o.titulo}" loading="lazy"
+                 onerror="this.src='https://placehold.co/300x450/1a1a1a/666?text=Obra'">
+            <div class="poster-meta">
+              <div class="d-flex justify-content-between align-items-start gap-1 mb-1">
+                <h6 class="mb-0 fw-bold text-truncate" title="${o.titulo}">${o.titulo}</h6>
+                <span class="badge bg-danger flex-shrink-0">${o.clasificacion}</span>
               </div>
-              <div class="text-lg-end">
-                <span class="d-block text-secondary small mb-2 fw-semibold">Horarios disponibles:</span>
-                <div class="d-flex flex-wrap gap-2 justify-content-lg-end mb-3">
-                  ${botonesHorarios}
-                </div>
-                <a href="detalle.html?id=${obra.id}&tipo=teatro" class="btn btn-danger btn-sm">Ver detalle</a>
-              </div>
+              <p class="small text-secondary mb-1">${o.duracion} · ${o.anio || ""}</p>
+              <div class="mb-1">${formatos}</div>
+              <p class="small text-secondary mb-0 text-truncate">${textoGenero(o.genero)}</p>
             </div>
           </div>
-        </div>
-      </div>
-    `;
-
-    contenedor.innerHTML += tarjeta;
+        </a>
+      </div>`;
   });
 }
 
@@ -97,13 +50,17 @@ function aplicarFiltros() {
   const texto = document.getElementById("inputBuscador")?.value.toLowerCase().trim() || "";
   const genero = document.getElementById("selectGenero")?.value || "";
   const clasificacion = document.getElementById("selectClasificacion")?.value || "";
+  const anio = document.getElementById("selectAnio")?.value || "";
 
-  const resultados = DB.obras.filter((obra) => {
-    const coincideTexto = obra.titulo.toLowerCase().includes(texto) || obra.sinopsis.toLowerCase().includes(texto);
-    const coincideGenero = genero === "" || obra.genero.toLowerCase().includes(genero.toLowerCase());
-    const coincideClasificacion = clasificacion === "" || obra.clasificacion === clasificacion;
-    return coincideTexto && coincideGenero && coincideClasificacion;
+  const resultados = DB.obras.filter(o => {
+    if (o.estado === "proximo") return false;
+    const g = textoGenero(o.genero).toLowerCase();
+    return (
+      (o.titulo.toLowerCase().includes(texto) || (o.sinopsis || "").toLowerCase().includes(texto)) &&
+      (!genero || g.includes(genero.toLowerCase())) &&
+      (!clasificacion || o.clasificacion === clasificacion) &&
+      (!anio || String(o.anio) === anio)
+    );
   });
-
   mostrarObras(resultados);
 }

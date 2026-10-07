@@ -1,120 +1,130 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Películas - Cine & Teatro</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Películas - Cine & Teatro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-
-<body class="bg-dark text-light">
-
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top border-bottom border-secondary">
-            <div class="container">
-
-                <!-- Logo -->
-                <a class="navbar-brand fw-bold text-danger d-flex align-items-center gap-2" href="index.html">
-                    <i class="bi bi-film fs-3"></i>
-                    <span>Cine & Teatro</span>
-                </a>
-
-                <!-- Botón menú móvil -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Menú -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="peliculas.html">Películas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="obras.html">Teatro</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="comunidad.html">Comunidad</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="historial.html">Historial</a>
-                        </li>
-                    </ul>
-
-                    <!-- ÁREA DE SESIÓN (controlada por app.js) -->
-                    <div id="authArea" class="d-flex align-items-center gap-2">
-                        <!-- Aquí se cargan los botones automáticamente -->
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main class="container py-4">
-
-        <!-- Botón Volver -->
-        <div class="mb-3">
-            <button onclick="window.history.back()" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-arrow-left"></i> Volver
-            </button>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-cinemark" id="mainNavbar">
+      <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="index.html">
+          <i class="bi bi-film fs-3"></i><span>Cine & Teatro</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link active" href="peliculas.html">Películas</a></li>
+            <li class="nav-item"><a class="nav-link" href="obras.html">Teatro</a></li>
+            <li class="nav-item"><a class="nav-link" href="comunidad.html">Comunidad</a></li>
+            <li class="nav-item"><a class="nav-link" href="historial.html">Historial</a></li>
+          </ul>
+          <div id="authArea" class="d-flex align-items-center gap-2"></div>
         </div>
+      </div>
+    </nav>
+  </header>
 
-        <!-- Título -->
-        <h1 class="h2 fw-bold mb-4 border-start border-4 border-danger ps-2">
-            Cartelera de Películas
-        </h1>
+  <main class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+      <h1 class="h2 fw-bold section-title mb-0">Cartelera de Películas</h1>
+      <button class="btn btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#panelFiltros">
+        <i class="bi bi-funnel"></i> Filtros
+      </button>
+    </div>
 
-        <!-- Buscador y filtros -->
-        <div class="row g-3 mb-4 p-3 bg-secondary bg-opacity-25 rounded">
-            <div class="col-12 col-md-6">
-                <input type="text" id="inputBuscador" class="form-control bg-dark text-white border-secondary" placeholder="Buscar por título...">
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <select id="selectGenero" class="form-select bg-dark text-white border-secondary">
-                    <option value="">Todos los géneros</option>
-                    <option value="Acción">Acción</option>
-                    <option value="Comedia">Comedia</option>
-                    <option value="Terror">Terror</option>
-                    <option value="Romance">Romance</option>
-                    <option value="Suspenso">Suspenso</option>
-                    <option value="Ciencia Ficción">Ciencia Ficción</option>
-                </select>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-                <select id="selectClasificacion" class="form-select bg-dark text-white border-secondary">
-                    <option value="">Todas las clasificaciones</option>
-                    <option value="TE">TE</option>
-                    <option value="TE+7">TE+7</option>
-                    <option value="+14">+14</option>
-                    <option value="+18">+18</option>
-                </select>
-            </div>
+    <div class="collapse mb-4" id="panelFiltros">
+      <div class="filtros-panel">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label small text-secondary">Nombre</label>
+            <input type="text" id="inputBuscador" class="form-control" placeholder="Buscar por título...">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small text-secondary">Clasificación</label>
+            <select id="selectClasificacion" class="form-select">
+              <option value="">Todas</option>
+              <option value="TE">TE</option>
+              <option value="TE+7">TE+7</option>
+              <option value="+14">+14</option>
+              <option value="+18">+18</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small text-secondary">Género</label>
+            <select id="selectGenero" class="form-select">
+              <option value="">Todos</option>
+              <option value="Acción">Acción</option>
+              <option value="Comedia">Comedia</option>
+              <option value="Drama">Drama</option>
+              <option value="Ciencia Ficción">Ciencia Ficción</option>
+              <option value="Animación">Animación</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small text-secondary">Año</label>
+            <select id="selectAnio" class="form-select">
+              <option value="">Todos</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+            </select>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Contenedor de películas -->
-        <div id="contenedorPeliculas" class="d-flex flex-column gap-4">
-            <!-- Las tarjetas se generan con JavaScript -->
-        </div>
+    <div id="contenedorPeliculas" class="row g-4"></div>
 
-    </main>
+    <div class="text-center mt-5">
+      <a href="obras.html" class="btn btn-outline-light me-2">Ver obras de teatro</a>
+      <button type="button" class="btn btn-danger" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCompraRapida">
+        Compra rápida
+      </button>
+    </div>
+  </main>
 
-    <footer class="bg-black text-secondary py-4 border-top border-secondary mt-5">
-        <div class="container text-center">
-            <p class="mb-0">&copy; 2026 Cine & Teatro - Prototipo Web Interactivo</p>
-        </div>
-    </footer>
+  <footer class="py-4 mt-auto">
+    <div class="container text-center"><p class="mb-0 small">&copy; 2026 Cine & Teatro</p></div>
+  </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/datos.js"></script>
-    <script src="js/peliculas.js"></script>
-    <script src="js/app.js"></script>
+  <button class="btn btn-danger btn-compra-rapida" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCompraRapida">
+    <i class="bi bi-lightning-fill"></i> Compra rápida
+  </button>
+  <div class="offcanvas offcanvas-end offcanvas-compra" tabindex="-1" id="offcanvasCompraRapida">
+    <div class="offcanvas-header border-bottom border-secondary">
+      <h5 class="offcanvas-title fw-bold">Compra rápida</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <p class="text-secondary small mb-4">En pocos pasos obtén tu entrada.</p>
+      <div class="mb-3"><label class="form-label">Película / Obra *</label><select id="crPelicula" class="form-select"></select></div>
+      <div class="mb-3"><label class="form-label">Fecha *</label><select id="crFecha" class="form-select" disabled></select></div>
+      <div class="mb-3"><label class="form-label">Formato *</label><select id="crFormato" class="form-select" disabled></select></div>
+      <div class="mb-4"><label class="form-label">Hora *</label><select id="crHora" class="form-select" disabled></select></div>
+      <button id="crBtnComprar" class="btn btn-danger w-100 fw-bold" disabled>Comprar</button>
+    </div>
+  </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/datos.js"></script>
+  <script src="js/carrito.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/compra-rapida.js"></script>
+  <script src="js/peliculas.js"></script>
+  <script>
+    window.addEventListener("scroll", () => {
+      document.getElementById("mainNavbar")?.classList.toggle("is-scrolled", window.scrollY > 10);
+    });
+  </script>
 </body>
 </html>
