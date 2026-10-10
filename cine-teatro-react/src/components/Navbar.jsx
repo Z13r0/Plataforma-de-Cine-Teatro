@@ -1,49 +1,148 @@
 /**
- * Navbar.jsx — Barra de navegación superior de la aplicación: muestra el logotipo, enlaces principales, alternador de tema y controles de sesión de usuario.
+ * Navbar.jsx — Barra de navegación superior sticky con diseño responsivo, alternador de tema, menú de enlaces principales y controles de sesión según el rol del usuario.
  */
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Navbar() {
-  // --- CONTEXTOS: Obtiene el tema actual y función de alternancia, así como los datos de autenticación ---
-  const { theme, toggle } = useTheme();
-  const { user, logout } = useAuth();
+  // --- CONTEXTOS Y NAVEGACIÓN ---
+  const { theme, toggle } = useTheme(); // Control del tema visual (claro/oscuro)
+  const { user, logout } = useAuth();   // Datos del usuario autenticado y función de cierre de sesión
+  const navigate = useNavigate();       // Hook para redireccionar tras salir
+
+  // --- ESTADO PARA EFECTO DE SCROLL ---
+  const [scrolled, setScrolled] = useState(false);
+
+  // --- EFECTO DE SCROLL: Detecta el desplazamiento vertical para aplicar una sombra cinematográfica ---
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // --- MANEJADOR DE CIERRE DE SESIÓN: Cierra sesión y redirige al inicio ---
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-cinemark">
+    <nav
+      className={`navbar navbar-expand-lg navbar-cinemark ${
+        scrolled ? "is-scrolled" : ""
+      }`}
+    >
       <div className="container">
         
-        {/* --- LOGOTIPO Y ENLACE DE INICIO --- */}
-        <Link className="navbar-brand fw-bold" to="/">
-          <i className="bi bi-film me-2" />
-          Cine & Teatro
+        {/* --- LOGOTIPO DE LA APLICACIÓN --- */}
+        <Link className="navbar-brand fw-bold d-flex align-items-center gap-2" to="/">
+          <i className="bi bi-film fs-3" />
+          <span>Cine & Teatro</span>
         </Link>
-        
-        {/* --- CONTROLES DERECHOS: Enlaces, Alternador de Tema y Estado de Sesión --- */}
-        <div className="d-flex align-items-center gap-2 ms-auto">
-          <NavLink className="nav-link" to="/">Inicio</NavLink>
-          <NavLink className="nav-link" to="/peliculas">Películas</NavLink>
-          <NavLink className="nav-link" to="/teatro">Teatro</NavLink>
+
+        {/* --- BOTÓN HAMBURGUESA (Menú móvil) --- */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarMain"
+          aria-controls="navbarMain"
+          aria-expanded="false"
+          aria-label="Menú"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        {/* --- CONTENEDOR COLAPSIBLE DE ENLACES Y CONTROLES --- */}
+        <div className="collapse navbar-collapse" id="navbarMain">
           
-          {/* --- BOTÓN PARA CAMBIAR TEMA (Oscuro / Claro) --- */}
-          <button type="button" className="btn btn-outline-light btn-sm" onClick={toggle}>
-            <i className={`bi ${theme === "dark" ? "bi-sun-fill" : "bi-moon-fill"}`} />
-          </button>
-          
-          {/* --- RENDERIZADO CONDICIONAL DE SESIÓN: Muestra nombre y salir si hay usuario, o botón de acceso si no --- */}
-          {user ? (
-            <>
-              <span className="small">{user.nombre}</span>
-              <button type="button" className="btn btn-outline-danger btn-sm" onClick={logout}>
-                Salir
-              </button>
-            </>
-          ) : (
-            <Link className="btn btn-danger btn-sm" to="/login">
-              Iniciar sesión
-            </Link>
-          )}
+          {/* --- ENLACES DE NAVEGACIÓN PRINCIPAL --- */}
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/" end>
+                Inicio
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/peliculas">
+                Películas
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/teatro">
+                Teatro
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/comunidad">
+                Comunidad
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/historial">
+                Historial
+              </NavLink>
+            </li>
+          </ul>
+
+          {/* --- CONTROLES DE TEMA Y AUTENTICACIÓN --- */}
+          <div className="d-flex align-items-center gap-2 flex-wrap">
+            
+            {/* --- BOTÓN ALTERNADOR DE TEMA --- */}
+            <button
+              type="button"
+              className="btn btn-outline-light btn-sm"
+              onClick={toggle}
+              title="Cambiar tema"
+            >
+              <i
+                className={`bi ${
+                  theme === "dark" ? "bi-sun-fill" : "bi-moon-fill"
+                }`}
+              />
+            </button>
+
+            {/* --- RENDERIZADO CONDICIONAL SEGÚN ESTADO DE SESIÓN --- */}
+            {user ? (
+              <>
+                {/* Enlace al perfil de usuario */}
+                <NavLink className="btn btn-outline-light btn-sm" to="/perfil">
+                  <i className="bi bi-person me-1" />
+                  {user.nombre}
+                </NavLink>
+
+                {/* Enlace rápido a mis compras */}
+                <NavLink className="btn btn-outline-light btn-sm" to="/historial">
+                  <i className="bi bi-ticket-perforated me-1" />
+                  Mis compras
+                </NavLink>
+
+                {/* Enlace al panel de administración (solo si el rol es 'admin') */}
+                {user.rol === "admin" && (
+                  <NavLink className="btn btn-outline-light btn-sm" to="/admin">
+                    Admin
+                  </NavLink>
+                )}
+
+                {/* Botón de cierre de sesión */}
+                <button
+                  type="button"
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={handleLogout}
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              /* Botón de inicio de sesión para usuarios no autenticados */
+              <Link className="btn btn-danger btn-sm" to="/login">
+                <i className="bi bi-person-fill me-1" />
+                Iniciar sesión
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </nav>
