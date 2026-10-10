@@ -265,3 +265,40 @@ const DB = {
 };
 
 console.log("DB cargada:", DB.peliculas.length, "películas,", DB.obras.length, "obras");
+
+/**
+ * Busca película u obra por id.
+ * Consulta primero el catálogo estático (DB) según el tipo, y de no encontrarse,
+ * busca en el contenido añadido por el administrador en el localStorage.
+ */
+export function getContentById(id, tipo) {
+  // --- SELECCIÓN DE LISTA BASE: Define si busca en películas o teatro según el parámetro ---
+  const list = tipo === "teatro" ? DB.obras || [] : DB.peliculas || [];
+  // --- CARGA DE DATOS DEL ADMIN: Recupera el contenido personalizado desde el almacenamiento local ---
+  const admin = JSON.parse(localStorage.getItem("contenidoAdmin") || "[]");
+  
+  // --- BÚSQUEDA Y RETORNO: Compara IDs convirtiéndolos a número para asegurar la coincidencia ---
+  return (
+    list.find((x) => Number(x.id) === Number(id)) ||
+    admin.find((x) => Number(x.id) === Number(id) && x.tipo === tipo) ||
+    null
+  );
+}
+
+/**
+ * Funciones (horarios) del contenido: base + las del admin.
+ * Combina las funciones predefinidas del sistema con las creadas por el administrador para un ítem específico.
+ */
+export function getFunciones(id, tipo) {
+  // --- FILTRADO DE FUNCIONES BASE: Obtiene las funciones de la DB que coinciden con el ID y tipo ---
+  const base = (DB.funciones || []).filter(
+    (f) => Number(f.contenidoId) === Number(id) && f.tipo === tipo
+  );
+  // --- FILTRADO DE FUNCIONES ADMIN: Obtiene las funciones añadidas por el admin desde el localStorage ---
+  const admin = JSON.parse(localStorage.getItem("funcionesAdmin") || "[]").filter(
+    (f) => Number(f.contenidoId) === Number(id) && f.tipo === tipo
+  );
+  
+  // --- CONSOLIDACIÓN: Retorna la unión de ambos arreglos de horarios ---
+  return [...base, ...admin];
+}
