@@ -1,9 +1,24 @@
+import { useEffect, useRef } from "react";
+import { Carousel as CarruselBootstrap } from "bootstrap";
+
 export default function Carousel() {
+  const referencia = useRef(null);
+
+  useEffect(() => {
+    const carrusel = CarruselBootstrap.getOrCreateInstance(referencia.current);
+    return () => carrusel.dispose();
+  }, []);
+
   return (
     <section className="mb-5">
       <h2 className="h3 fw-bold mb-3 border-start border-4 border-danger ps-2">Estrenos Destacados</h2>
 
-      <div id="carruselDestacados" className="carousel slide shadow-lg rounded-3 overflow-hidden" data-bs-ride="carousel">
+      <div
+        id="carruselDestacados"
+        ref={referencia}
+        className="carousel slide shadow-lg rounded-3 overflow-hidden"
+        data-bs-ride="carousel"
+      >
         <div className="carousel-indicators">
           <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="0" className="active" />
           <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="1" />
