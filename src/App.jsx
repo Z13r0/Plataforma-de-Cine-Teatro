@@ -6,6 +6,7 @@ import Historial from "./pages/Historial";
 import Inicio from "./pages/Inicio";
 import Obras from "./pages/Obras";
 import Peliculas from "./pages/Peliculas";
+import InicioCuenta from "./pages/InicioCuenta";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/obras" element={<Obras />} />
         <Route path="/comunidad" element={<Comunidad />} />
         <Route path="/historial" element={<Historial />} />
+        <Route path="/login" element={<InicioCuenta />} />
       </Routes>
       <Footer />
     </div>

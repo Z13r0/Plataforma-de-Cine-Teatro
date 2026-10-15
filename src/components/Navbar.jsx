@@ -1,6 +1,7 @@
 /*Para el boton de usuario se usa #userPanel como identificador */
 import { Link, NavLink } from "react-router-dom";
 import UserPanel from "./UserPanel";
+import { getUser } from "../utils/auth";
 
 const NAV_ITEMS = [
   { label: "Inicio", to: "/", end: true },
@@ -11,6 +12,8 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar() {
+
+  const user = getUser();
   return (
     <>
       <nav aria-label="Principal" className="navbar navbar-expand-lg bg-black sticky-top border-bottom border-secondary">
@@ -62,15 +65,27 @@ export default function Navbar() {
             </div>
           </div>
           <div className="d-flex align-items-center gap-2">
+            {/* Botón rojo como en feature — solo si NO hay sesión */}
+            {!user && (
+              <Link to="/login" className="btn btn-danger btn-sm">
+                <i className="bi bi-person-fill me-1" />
+                Iniciar sesión
+              </Link>
+            )}
+
+            {/* Icono: abre el panel "Mi cuenta" (se mantiene) */}
             <button
               type="button"
-              className="btn btn-outline-light d-flex align-items-center"
+              className="btn btn-outline-light btn-sm d-flex align-items-center"
               aria-label="Abrir menú de usuario"
               data-bs-toggle="offcanvas"
               data-bs-target="#userPanel"
               aria-controls="userPanel"
             >
               <i className="bi bi-person-circle" />
+              {user && (
+                <span className="d-none d-sm-inline ms-1">{user.nombre}</span>
+              )}
             </button>
           </div>
         </div>
