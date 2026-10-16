@@ -1,0 +1,8 @@
+.card .card-extendido__imagen {
+  height: 230px;
+  object-fit: cover;
+}
+
+.card-extendido__sinopsis {
+  max-width: 520px;
+}

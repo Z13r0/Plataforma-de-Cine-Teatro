@@ -1,29 +1,16 @@
 import "./Card.css";
+import { ESTILOS_POR_TIPO, getContentById } from "../data/db";
 
-const ESTILOS_POR_TIPO = {
-  cine: {
-    etiqueta: "Cine",
-    insignia: "bg-danger",
-    reloj: "text-danger",
-    boton: "btn-outline-danger",
-  },
-  teatro: {
-    etiqueta: "Teatro",
-    insignia: "bg-primary",
-    reloj: "text-primary",
-    boton: "btn-outline-primary",
-  },
-};
+export default function Card({ id, tipo = "cine" }) {
+  const contenido = getContentById(id, tipo);
 
-export default function Card({
-  titulo = "Título",
-  genero = "Descripción",
-  duracion = "Duración",
-  valoracion = "Sin valoración",
-  imagen = null,
-  tipo = "cine",
-}) {
-  const estilo = ESTILOS_POR_TIPO[tipo];
+  if (!contenido) {
+    return null;
+  }
+
+  const { titulo, genero, duracion, valoracion, imagen } = contenido;
+  const descripcion = Array.isArray(genero) ? genero.join(", ") : genero;
+  const estilo = ESTILOS_POR_TIPO[tipo] || ESTILOS_POR_TIPO.cine;
 
   return (
     <div className="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
@@ -47,7 +34,7 @@ export default function Card({
       )}
       <div className="card-body d-flex flex-column">
         <h5 className="card-title fw-bold text-truncate">{titulo}</h5>
-        <p className="card-text text-secondary small mb-2">{genero}</p>
+        <p className="card-text text-secondary small mb-2">{descripcion}</p>
         <div className="d-flex justify-content-between align-items-center small mb-3">
           <span>
             <i className={`bi bi-clock me-1 ${estilo.reloj}`} />
