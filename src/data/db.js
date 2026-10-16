@@ -304,6 +304,38 @@ export function getFunciones(id, tipo) {
 }
 
 /**
+ * Géneros únicos presentes en una lista, ordenados alfabéticamente.
+ */
+export function obtenerGeneros(lista) {
+  const generos = lista.flatMap((item) =>
+    Array.isArray(item.genero) ? item.genero : [item.genero || ""]
+  );
+
+  return [...new Set(generos.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * Filtra una lista por texto (título o sinopsis), género y clasificación.
+ * Mismo criterio que el buscador del sitio legacy.
+ */
+export function filtrarContenido(lista, { texto = "", genero = "", clasificacion = "" } = {}) {
+  const busqueda = texto.toLowerCase().trim();
+
+  return lista.filter((item) => {
+    const generos = Array.isArray(item.genero) ? item.genero : [item.genero || ""];
+    const coincideTexto =
+      item.titulo.toLowerCase().includes(busqueda) ||
+      (item.sinopsis || "").toLowerCase().includes(busqueda);
+    const coincideGenero =
+      genero === "" || generos.join(" ").toLowerCase().includes(genero.toLowerCase());
+    const coincideClasificacion =
+      clasificacion === "" || item.clasificacion === clasificacion;
+
+    return coincideTexto && coincideGenero && coincideClasificacion;
+  });
+}
+
+/**
  * Apariencia de cada tipo de contenido (cine / teatro).
  * Compartida por las tarjetas: una sola fuente para etiqueta y colores.
  */

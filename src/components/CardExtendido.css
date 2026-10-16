@@ -1,19 +1,8 @@
-.card-extendido__portada {
-  position: relative;
-  min-height: 240px;
-}
-
-.card-extendido__imagen {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.card .card-extendido__imagen {
+  height: 230px;
   object-fit: cover;
 }
 
-.card-extendido__funcion {
-  font-size: 0.8rem;
-  font-weight: 500;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.card-extendido__sinopsis {
+  max-width: 520px;
 }

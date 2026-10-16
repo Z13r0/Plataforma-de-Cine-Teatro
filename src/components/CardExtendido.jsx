@@ -1,6 +1,12 @@
-import "./Card.css";
 import "./CardExtendido.css";
-import { DB, ESTILOS_POR_TIPO, getContentById, getFunciones } from "../data/db";
+import { getContentById, getFunciones } from "../data/db";
+
+const COLOR_CLASIFICACION = {
+  TE: "bg-success",
+  "TE+7": "bg-info text-dark",
+  "+14": "bg-warning text-dark",
+  "+18": "bg-danger",
+};
 
 export default function CardExtendido({ id, tipo = "cine" }) {
   const contenido = getContentById(id, tipo);
@@ -9,25 +15,20 @@ export default function CardExtendido({ id, tipo = "cine" }) {
     return null;
   }
 
-  const { titulo, genero, sinopsis, duracion, valoracion, imagen } = contenido;
-  const generoTexto = Array.isArray(genero) ? genero.join(", ") : genero;
-  const estilo = ESTILOS_POR_TIPO[tipo] || ESTILOS_POR_TIPO.cine;
+  const { titulo, genero, sinopsis, duracion, clasificacion, imagen } = contenido;
+  const generoTexto = Array.isArray(genero) ? genero.join(" / ") : genero;
   const funciones = getFunciones(id, tipo);
-  const salas = Object.fromEntries(DB.salas.map((sala) => [sala.id, sala.nombre]));
+  const colorClasificacion = COLOR_CLASIFICACION[clasificacion] || "bg-secondary";
 
   return (
-    <div className="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm overflow-hidden">
-      <span className={`position-absolute top-0 start-0 m-2 badge ${estilo.insignia}`}>
-        {estilo.etiqueta}
-      </span>
-
-      <div className="row g-0">
-        <div className="col-12 col-md-3 card-extendido__portada">
+    <div className="card bg-black border-secondary overflow-hidden card-hover">
+      <div className="row g-0 align-items-center">
+        <div className="col-12 col-md-4 col-lg-3">
           {imagen ? (
             <img
               src={imagen}
               alt={titulo}
-              className="card-extendido__imagen"
+              className="img-fluid w-100 card-extendido__imagen"
             />
           ) : (
             <div className="card-extendido__imagen bg-body-secondary d-flex align-items-center justify-content-center">
@@ -36,40 +37,50 @@ export default function CardExtendido({ id, tipo = "cine" }) {
           )}
         </div>
 
-        <div className="col-12 col-md-9">
-          <div className="card-body d-flex flex-column h-100">
-            <h5 className="card-title fw-bold">{titulo}</h5>
-            <p className="card-text text-secondary small mb-2">{generoTexto}</p>
-            <p className="card-text small mb-0">{sinopsis}</p>
-            <div className="d-flex justify-content-between align-items-center small mt-auto">
-              <span>
-                <i className={`bi bi-clock me-1 ${estilo.reloj}`} />
+        <div className="col-12 col-md-8 col-lg-9">
+          <div className="card-body p-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+              <span className={`badge ${colorClasificacion} mb-2`}>{clasificacion}</span>
+              <span className="badge bg-secondary mb-2 ms-1">{generoTexto}</span>
+
+              <h3 className="card-title fw-bold mb-1">{titulo}</h3>
+
+              <p className="text-secondary small mb-2">
+                <i className="bi bi-clock me-1" />
                 {duracion}
+              </p>
+
+              <p className="card-text text-light opacity-75 small mb-0 card-extendido__sinopsis">
+                {sinopsis}
+              </p>
+            </div>
+
+            <div className="text-lg-end">
+              <span className="d-block text-secondary small mb-2 fw-semibold">
+                Horarios disponibles:
               </span>
-              <span className="badge bg-dark border border-secondary text-warning">
-                ⭐ {valoracion}
-              </span>
+              <div className="d-flex flex-wrap gap-2 justify-content-lg-end mb-3">
+                {funciones.length > 0 ? (
+                  funciones.map((funcion) => (
+                    <a
+                      key={funcion.id}
+                      href="#"
+                      className="btn btn-outline-danger btn-sm"
+                    >
+                      {funcion.hora}
+                    </a>
+                  ))
+                ) : (
+                  <span className="text-secondary small">Sin funciones disponibles</span>
+                )}
+              </div>
+
+              <a href="#" className="btn btn-danger btn-sm">
+                Ver detalle
+              </a>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="border-top border-secondary p-3">
-        <p className="small fw-semibold text-uppercase text-secondary mb-2">Funciones</p>
-        {funciones.length > 0 ? (
-          <ul className="list-unstyled d-flex flex-wrap gap-2 mb-0">
-            {funciones.map((funcion) => (
-              <li
-                key={funcion.id}
-                className={`badge ${estilo.insignia} card-extendido__funcion`}
-              >
-                {funcion.fecha} · {funcion.hora} · {salas[funcion.salaId] ?? funcion.salaId}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="small text-secondary mb-0">Sin funciones disponibles</p>
-        )}
       </div>
     </div>
   );
