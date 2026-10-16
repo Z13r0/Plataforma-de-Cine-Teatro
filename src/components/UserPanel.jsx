@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
-import { getUser, logout } from "../utils/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function UserPanel() {
-  const user = getUser();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div
@@ -50,7 +51,7 @@ export default function UserPanel() {
               data-bs-dismiss="offcanvas"
               onClick={() => {
                 logout();
-                window.location.href = "/";
+                navigate("/");
               }}
             >
               Salir

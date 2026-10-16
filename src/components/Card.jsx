@@ -1,5 +1,9 @@
 import "./Card.css";
+import { Link } from "react-router-dom";
 
+/**
+ * Estilos visuales según el tipo de contenido (cine o teatro)
+ */
 const ESTILOS_POR_TIPO = {
   cine: {
     etiqueta: "Cine",
@@ -15,7 +19,19 @@ const ESTILOS_POR_TIPO = {
   },
 };
 
+/**
+ * Card - Componente reutilizable para mostrar películas y obras
+ * @param {Object} props - Datos del contenido
+ * @param {number} props.id - ID del contenido
+ * @param {string} props.titulo - Título del contenido
+ * @param {string|Array} props.genero - Género(s) del contenido
+ * @param {string} props.duracion - Duración del contenido
+ * @param {number} props.valoracion - Valoración del contenido
+ * @param {string} props.imagen - URL de la imagen
+ * @param {string} props.tipo - Tipo de contenido ("cine" o "teatro")
+ */
 export default function Card({
+  id,
   titulo = "Título",
   genero = "Descripción",
   duracion = "Duración",
@@ -24,6 +40,12 @@ export default function Card({
   tipo = "cine",
 }) {
   const estilo = ESTILOS_POR_TIPO[tipo];
+
+  // Formatear géneros si es un array
+  const generoTexto = Array.isArray(genero) ? genero.join(", ") : genero;
+
+  // Determinar la ruta de detalle según el tipo
+  const detallePath = tipo === "cine" ? `/peliculas/${id}` : `/obras/${id}`;
 
   return (
     <div className="card h-100 bg-secondary bg-opacity-10 border-secondary text-light card-hover shadow-sm">
@@ -47,7 +69,7 @@ export default function Card({
       )}
       <div className="card-body d-flex flex-column">
         <h5 className="card-title fw-bold text-truncate">{titulo}</h5>
-        <p className="card-text text-secondary small mb-2">{genero}</p>
+        <p className="card-text text-secondary small mb-2">{generoTexto}</p>
         <div className="d-flex justify-content-between align-items-center small mb-3">
           <span>
             <i className={`bi bi-clock me-1 ${estilo.reloj}`} />
@@ -57,9 +79,12 @@ export default function Card({
             ⭐ {valoracion}
           </span>
         </div>
-        <button type="button" className={`btn ${estilo.boton} w-100 mt-auto`} disabled>
+        <Link
+          to={detallePath}
+          className={`btn ${estilo.boton} w-100 mt-auto`}
+        >
           Ver Detalle
-        </button>
+        </Link>
       </div>
     </div>
   );

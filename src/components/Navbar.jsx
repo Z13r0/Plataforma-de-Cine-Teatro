@@ -1,7 +1,8 @@
 /*Para el boton de usuario se usa #userPanel como identificador */
 import { Link, NavLink } from "react-router-dom";
 import UserPanel from "./UserPanel";
-import { getUser } from "../utils/auth";
+import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 const NAV_ITEMS = [
   { label: "Inicio", to: "/", end: true },
@@ -12,8 +13,8 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar() {
-
-  const user = getUser();
+  const { user } = useAuth();
+  const { theme, toggle } = useTheme();
   return (
     <>
       <nav aria-label="Principal" className="navbar navbar-expand-lg bg-black sticky-top border-bottom border-secondary">
@@ -86,6 +87,16 @@ export default function Navbar() {
               {user && (
                 <span className="d-none d-sm-inline ms-1">{user.nombre}</span>
               )}
+            </button>
+
+            {/* Botón de tema */}
+            <button
+              type="button"
+              className="btn btn-outline-light btn-sm"
+              onClick={toggle}
+              title="Cambiar tema"
+            >
+              <i className={`bi ${theme === "dark" ? "bi-sun-fill" : "bi-moon-fill"}`} />
             </button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../utils/auth";
+import { useAuth } from "../contexts/AuthContext";
 import { emailValido } from "../utils/validations";
 
 /*
@@ -14,6 +14,7 @@ export default function InicioCuenta() {
       navigate permite cambiar de ruta después de un login exitoso
       (por ejemplo, ir al inicio o al panel admin).
   */
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   /*
