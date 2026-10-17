@@ -1,6 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import Admin from "./pages/Admin";
+import AdminFunciones from "./pages/admin/AdminFunciones";
+import AdminObras from "./pages/admin/AdminObras";
+import AdminPeliculas from "./pages/admin/AdminPeliculas";
+import AdminUsuarios from "./pages/admin/AdminUsuarios";
+import AdminVentas from "./pages/admin/AdminVentas";
 import Comunidad from "./pages/Comunidad";
 import Detalle from "./pages/Detalle";
 import Historial from "./pages/Historial";
@@ -31,6 +37,12 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/perfil" element={<Perfil />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/peliculas" element={<AdminPeliculas />} />
+            <Route path="/admin/obras" element={<AdminObras />} />
+            <Route path="/admin/funciones" element={<AdminFunciones />} />
+            <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+            <Route path="/admin/ventas" element={<AdminVentas />} />
           </Routes>
           <Footer />
         </div>
