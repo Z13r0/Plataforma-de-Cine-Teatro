@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Card.css";
 import { ESTILOS_POR_TIPO, getContentById } from "../data/db";
 
@@ -44,9 +45,11 @@ export default function Card({ id, tipo = "cine" }) {
             ⭐ {valoracion}
           </span>
         </div>
-        <button type="button" className={`btn ${estilo.boton} w-100 mt-auto`} disabled>
+        <Link
+          to={`/contenido/${tipo}/${id}`}
+          className={`btn ${estilo.boton} w-100 mt-auto`}>
           Ver Detalle
-        </button>
+        </Link>
       </div>
     </div>
   );
