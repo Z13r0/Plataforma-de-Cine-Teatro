@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Comunidad from "./pages/Comunidad";
+import Detalle from "./pages/Detalle";
 import Historial from "./pages/Historial";
 import Inicio from "./pages/Inicio";
 import Obras from "./pages/Obras";
@@ -19,6 +20,7 @@ function App() {
         <Route path="/obras" element={<Obras />} />
         <Route path="/comunidad" element={<Comunidad />} />
         <Route path="/historial" element={<Historial />} />
+        <Route path="/contenido/:tipo/:id" element={<Detalle />} />
       </Routes>
       <Footer />
     </div>

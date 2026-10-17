@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Carousel as CarruselBootstrap } from "bootstrap";
 
 export default function Carousel() {
@@ -36,7 +37,7 @@ export default function Carousel() {
               <span className="badge bg-warning text-dark">Estreno de Cine</span>
               <h3 className="fw-bold">Sci-Fi Odyssey 2026</h3>
               <p className="mb-1">Una aventura intergaláctica sin precedentes en formato IMAX.</p>
-              <a href="#" className="btn btn-danger btn-sm">Ver Funciones</a>
+                <Link to="/contenido/cine/3" className="btn btn-danger btn-sm">Ver Funciones</Link>
             </div>
           </div>
 
@@ -51,7 +52,7 @@ export default function Carousel() {
               <span className="badge bg-primary">Gran Obra de Teatro</span>
               <h3 className="fw-bold">El Fantasma de la Ópera</h3>
               <p className="mb-1">La obra clásica vuelve al escenario principal en vivo.</p>
-              <a href="#" className="btn btn-primary btn-sm">Reservar Butacas</a>
+                <Link to="/contenido/teatro/103" className="btn btn-primary btn-sm">Reservar Butacas</Link>
             </div>
           </div>
         </div>

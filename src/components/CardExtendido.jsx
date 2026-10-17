@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./CardExtendido.css";
 import { getContentById, getFunciones } from "../data/db";
 
@@ -75,9 +76,9 @@ export default function CardExtendido({ id, tipo = "cine" }) {
                 )}
               </div>
 
-              <a href="#" className="btn btn-danger btn-sm">
+              <Link to={`/contenido/${tipo}/${id}`} className="btn btn-danger btn-sm">
                 Ver detalle
-              </a>
+              </Link>
             </div>
           </div>
         </div>
