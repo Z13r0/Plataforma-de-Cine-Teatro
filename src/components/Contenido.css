@@ -1,0 +1,12 @@
+.contenido__portada {
+  display: block;
+  width: 320px;
+  height: 480px;
+  object-fit: cover;
+  border-radius: 0.375rem;
+}
+
+.datos {
+  width: 320px;
+}
+
