@@ -4,8 +4,8 @@
  */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { emailValido, passwordValida, nombreValido } from "../utils/validations";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import { emailValido, passwordValida, nombreValido } from "../utils/validations.js";
 
 // Este componente renderiza un formulario de registro con validaciones y manejo de errores.
 

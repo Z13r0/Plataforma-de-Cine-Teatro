@@ -3,8 +3,8 @@
  */
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useTheme } from "../contexts/ThemeContext";
-import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 const NAV_ITEMS = [
   { label: "Inicio", to: "/", end: true },

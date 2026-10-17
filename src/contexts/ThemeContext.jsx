@@ -16,10 +16,10 @@ export function ThemeProvider({ children }) {
     () => localStorage.getItem("theme") || "dark"
   );
 
-  // useEffect se ejecuta cada vez que el tema cambia. Actualiza el atributo data-bs-theme en <body> para Bootstrap y guarda el tema en localStorage.
+  // useEffect se ejecuta cada vez que el tema cambia. Actualiza el atributo data-theme en <html> para que el CSS reaccione y guarda el tema en localStorage.
 
   useEffect(() => {
-    document.body.setAttribute("data-bs-theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
