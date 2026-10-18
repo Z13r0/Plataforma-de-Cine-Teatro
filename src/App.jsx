@@ -19,6 +19,10 @@ import Registro from "./pages/Registro";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 
+import BotonCompraFlotante from "./components/BotonCompraFlotante";
+
+import Entrada from "./pages/Entrada";
+
 function App() {
   return (
     <AuthProvider>
@@ -43,8 +47,12 @@ function App() {
             <Route path="/admin/funciones" element={<AdminFunciones />} />
             <Route path="/admin/usuarios" element={<AdminUsuarios />} />
             <Route path="/admin/ventas" element={<AdminVentas />} />
+            <Route path="/entrada/:idTicket" element={<Entrada/>}/>
           </Routes>
           <Footer />
+
+          <BotonCompraFlotante />
+
         </div>
       </ThemeProvider>
     </AuthProvider>

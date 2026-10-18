@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { label: "Películas", to: "/peliculas" },
   { label: "Obras", to: "/obras" },
   { label: "Comunidad", to: "/comunidad" },
-  { label: "Historial", to: "/historial" },
+  // Se quita Historial ya que para acceder a el debes tener un usuario
 ];
 
 export default function Navbar() {

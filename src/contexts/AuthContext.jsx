@@ -2,7 +2,7 @@
  * AuthContext.jsx
  * Guarda la sesión del usuario (login, registro y admin) en React + localStorage.
  */
-import { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
