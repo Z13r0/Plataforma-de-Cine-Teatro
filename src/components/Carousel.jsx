@@ -33,7 +33,7 @@ export default function Carousel() {
               className="d-block w-100 object-fit-cover"
               style={{ height: "380px" }}
             />
-            <div className="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
+            <div className="carousel-caption bg-dark bg-opacity-75 rounded p-3 text-start">
               <span className="badge bg-warning text-dark">Estreno de Cine</span>
               <h3 className="fw-bold">Sci-Fi Odyssey 2026</h3>
               <p className="mb-1">Una aventura intergaláctica sin precedentes en formato IMAX.</p>
@@ -48,7 +48,7 @@ export default function Carousel() {
               className="d-block w-100 object-fit-cover"
               style={{ height: "380px" }}
             />
-            <div className="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-3 text-start">
+            <div className="carousel-caption bg-dark bg-opacity-75 rounded p-3 text-start">
               <span className="badge bg-primary">Gran Obra de Teatro</span>
               <h3 className="fw-bold">El Fantasma de la Ópera</h3>
               <p className="mb-1">La obra clásica vuelve al escenario principal en vivo.</p>
