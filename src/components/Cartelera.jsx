@@ -1,16 +1,58 @@
+import { useEffect, useState } from "react";
 import Card from "./Card";
-import { DB } from "../data/db";
+import { listarContenidos } from "../api/contenido";
 
+/**
+ * Cartelera.jsx — Listado de películas y obras en la página de inicio.
+ * Carga el catálogo desde el servicio de contenido (API).
+ */
 export default function Cartelera() {
+  const [contenidos, setContenidos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let vivo = true;
+
+    listarContenidos()
+      .then((lista) => {
+        if (vivo) setContenidos(lista);
+      })
+      .catch(() => {
+        if (vivo) setError(true);
+      })
+      .finally(() => {
+        if (vivo) setCargando(false);
+      });
+
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  const peliculas = contenidos.filter((contenido) => contenido.tipo === "cine");
+  const obras = contenidos.filter((contenido) => contenido.tipo === "teatro");
+
   return (
     <section>
       <h2 className="h3 fw-bold mb-4 border-start border-4 border-danger ps-2">
         Peliculas
       </h2>
+      {cargando && (
+        <div className="text-center py-4">
+          <div className="spinner-border text-danger" role="status" />
+          <p className="text-secondary mt-2">Cargando cartelera…</p>
+        </div>
+      )}
+      {error && (
+        <p className="text-secondary text-center py-4">
+          No se pudo cargar la cartelera. Intenta nuevamente más tarde.
+        </p>
+      )}
       <div className="row g-4">
-        {DB.peliculas.map((pelicula) => (
+        {peliculas.map((pelicula) => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={pelicula.id}>
-            <Card id={pelicula.id} tipo={pelicula.tipo} />
+            <Card contenido={pelicula} />
           </div>
         ))}
       </div>
@@ -18,9 +60,9 @@ export default function Cartelera() {
         Obras
       </h2>
       <div className="row g-4">
-        {DB.obras.map((obra) => (
+        {obras.map((obra) => (
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={obra.id}>
-            <Card id={obra.id} tipo={obra.tipo} />
+            <Card contenido={obra} />
           </div>
         ))}
       </div>

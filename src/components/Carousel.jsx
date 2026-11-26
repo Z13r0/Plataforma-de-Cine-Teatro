@@ -1,69 +1,121 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Carousel as CarruselBootstrap } from "bootstrap";
+import { obtenerDestacados } from "../api/destacados";
 
+/**
+ * Carousel.jsx — Carrusel de destacados de la página de inicio.
+ * Los slides vienen del servicio de destacados (selección del admin en el backend).
+ * Estados: cargando, error, vacío (sin destacados) y carrusel con N slides.
+ */
 export default function Carousel() {
   const referencia = useRef(null);
+  const [destacados, setDestacados] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
+    let vivo = true;
+
+    obtenerDestacados()
+      .then((slides) => {
+        if (vivo) setDestacados(slides);
+      })
+      .catch(() => {
+        if (vivo) setError(true);
+      })
+      .finally(() => {
+        if (vivo) setCargando(false);
+      });
+
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    // Sin slides no hay carrusel que instanciar (estados cargando/error/vacío)
+    if (!referencia.current) return;
     const carrusel = CarruselBootstrap.getOrCreateInstance(referencia.current);
     return () => carrusel.dispose();
-  }, []);
+  }, [destacados.length]);
 
   return (
     <section className="mb-5">
       <h2 className="h3 fw-bold mb-3 border-start border-4 border-danger ps-2">Estrenos Destacados</h2>
 
-      <div
-        id="carruselDestacados"
-        ref={referencia}
-        className="carousel slide shadow-lg rounded-3 overflow-hidden"
-        data-bs-ride="carousel"
-      >
-        <div className="carousel-indicators">
-          <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="0" className="active" />
-          <button type="button" data-bs-target="#carruselDestacados" data-bs-slide-to="1" />
+      {cargando && (
+        <div className="text-center py-4">
+          <div className="spinner-border text-danger" role="status" />
+          <p className="text-secondary mt-2">Cargando destacados…</p>
         </div>
+      )}
 
-        <div className="carousel-inner">
-          <div className="carousel-item active" data-bs-interval="4000">
-            <img
-              src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop"
-              alt="Cine"
-              className="d-block w-100 object-fit-cover"
-              style={{ height: "380px" }}
-            />
-            <div className="carousel-caption bg-dark bg-opacity-75 rounded p-3 text-start">
-              <span className="badge bg-warning text-dark">Estreno de Cine</span>
-              <h3 className="fw-bold">Sci-Fi Odyssey 2026</h3>
-              <p className="mb-1">Una aventura intergaláctica sin precedentes en formato IMAX.</p>
-                <Link to="/contenido/cine/3" className="btn btn-danger btn-sm">Ver Funciones</Link>
-            </div>
+      {!cargando && error && (
+        <div className="alert alert-warning text-center mb-0" role="status">
+          No se pudieron cargar los destacados. Intenta nuevamente más tarde.
+        </div>
+      )}
+
+      {!cargando && !error && destacados.length === 0 && (
+        // Estado vacío: aún no hay contenido destacado seleccionado
+        <div className="alert alert-secondary text-center mb-0" role="status">
+          Aún no hay contenido destacado. Próximamente se mostrarán aquí los estrenos seleccionados.
+        </div>
+      )}
+
+      {!cargando && !error && destacados.length > 0 && (
+        <div
+          id="carruselDestacados"
+          ref={referencia}
+          className="carousel slide shadow-lg rounded-3 overflow-hidden"
+          data-bs-ride="carousel"
+        >
+          <div className="carousel-indicators">
+            {destacados.map((item, indice) => (
+              <button
+                key={`indicador-${item.tipo}-${item.id}-${indice}`}
+                type="button"
+                data-bs-target="#carruselDestacados"
+                data-bs-slide-to={indice}
+                className={indice === 0 ? "active" : ""}
+              />
+            ))}
           </div>
 
-          <div className="carousel-item" data-bs-interval="4000">
-            <img
-              src="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?q=80&w=1200&auto=format&fit=crop"
-              alt="Teatro"
-              className="d-block w-100 object-fit-cover"
-              style={{ height: "380px" }}
-            />
-            <div className="carousel-caption bg-dark bg-opacity-75 rounded p-3 text-start">
-              <span className="badge bg-primary">Gran Obra de Teatro</span>
-              <h3 className="fw-bold">El Fantasma de la Ópera</h3>
-              <p className="mb-1">La obra clásica vuelve al escenario principal en vivo.</p>
-                <Link to="/contenido/teatro/103" className="btn btn-primary btn-sm">Reservar Butacas</Link>
-            </div>
+          <div className="carousel-inner">
+            {destacados.map((item, indice) => (
+              <div
+                key={`slide-${item.tipo}-${item.id}-${indice}`}
+                className={`carousel-item ${indice === 0 ? "active" : ""}`}
+                data-bs-interval="4000"
+              >
+                <img
+                  src={item.imagen}
+                  alt={item.titulo}
+                  className="d-block w-100 object-fit-cover"
+                  style={{ height: "380px" }}
+                />
+                <div className="carousel-caption bg-dark bg-opacity-75 rounded p-3 text-start">
+                  <span className={`badge ${item.insignia}`}>{item.etiqueta}</span>
+                  <h3 className="fw-bold">{item.titulo}</h3>
+                  <p className="mb-1">{item.descripcion}</p>
+                  <Link to={item.enlace} className={`btn ${item.boton} btn-sm`}>
+                    {item.textoBoton}
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
 
-        <button className="carousel-control-prev" type="button" data-bs-target="#carruselDestacados" data-bs-slide="prev">
-          <span className="carousel-control-prev-icon" />
-        </button>
-        <button className="carousel-control-next" type="button" data-bs-target="#carruselDestacados" data-bs-slide="next">
-          <span className="carousel-control-next-icon" />
-        </button>
-      </div>
+          <button className="carousel-control-prev" type="button" data-bs-target="#carruselDestacados" data-bs-slide="prev">
+            <span className="carousel-control-prev-icon" />
+          </button>
+          <button className="carousel-control-next" type="button" data-bs-target="#carruselDestacados" data-bs-slide="next">
+            <span className="carousel-control-next-icon" />
+          </button>
+        </div>
+      )}
     </section>
   );
 }

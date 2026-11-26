@@ -1,49 +1,69 @@
 /**
  * Detalle.jsx — Página de detalle de película u obra.
- * Lee la selección de Compra Rápida (si existe) y precarga asientos.
+ * El contenido se resuelve desde el servicio de contenido (API).
+ *
+ * NOTA: los horarios/funciones aún no tienen microservicio, por lo que el flujo
+ * de compra (horarios, butacas, snacks y compra) queda inoperante y se muestra
+ * "Próximamente funciones" hasta que exista el ms de funciones.
  */
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Contenido from "../components/Contenido";
-import DetalleHorario from "../components/DetalleHorario";
-import SeatSelector from "../components/SelectorSilla";
-import SnacksSection from "../components/SeccionSnacks";
-import QuickPurchaseButton from "../components/CompraRapida";
-import { getContentById, DB } from "../data/db";
+import { obtenerContenido } from "../api/contenido";
 
 export default function Detalle() {
   const { tipo, id } = useParams();
-  const [snacks, setSnacks] = useState([]);
-  const [asientos, setAsientos] = useState([]);
-  const [funcionInfo, setFuncionInfo] = useState(null);
+  // Estado de la carga: se guarda junto al id consultado para detectar cambios de ruta
+  const [resultado, setResultado] = useState({
+    id: null,
+    contenido: null,
+    cargando: true,
+    error: false,
+  });
 
-  const contenido = getContentById(id, tipo);
-
-  /**
-   * Lee la selección guardada por el botón de Compra Rápida.
-   */
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem("compraRapida");
-      if (!raw) return;
+    let vivo = true;
 
-      const data = JSON.parse(raw);
+    obtenerContenido(id)
+      .then((datos) => {
+        if (vivo) setResultado({ id, contenido: datos, cargando: false, error: false });
+      })
+      .catch(() => {
+        if (vivo) setResultado({ id, contenido: null, cargando: false, error: true });
+      });
 
-      if (String(data.contenidoId) === String(id) && data.tipo === tipo) {
-        setAsientos(data.asientos || []);
-        setFuncionInfo({
-          funcionId: data.funcionId,
-          fecha: data.fecha,
-          hora: data.hora,
-          salaId: data.salaId,
-        });
-      }
+    return () => {
+      vivo = false;
+    };
+  }, [id]);
 
-      sessionStorage.removeItem("compraRapida");
-    } catch {
-      // ignorar errores de parseo
-    }
-  }, [id, tipo]);
+  // Si el id de la ruta cambió, se muestra carga hasta que llegue el resultado nuevo
+  const cargando = resultado.id !== id || resultado.cargando;
+  const error = !cargando && resultado.error;
+  const contenido = !cargando && !error ? resultado.contenido : null;
+
+  if (cargando) {
+    return (
+      <main className="container py-5 text-center">
+        <div className="spinner-border text-danger" role="status" />
+        <p className="text-secondary mt-2">Cargando contenido…</p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="container py-5 text-center">
+        <h2 className="h4">No se pudo cargar el contenido</h2>
+        <p className="text-secondary">
+          Ocurrió un problema al consultar el contenido. Intenta nuevamente más tarde.
+        </p>
+        <Link to="/peliculas" className="btn btn-danger mt-3">
+          Volver a películas
+        </Link>
+      </main>
+    );
+  }
 
   if (!contenido) {
     return (
@@ -60,64 +80,20 @@ export default function Detalle() {
     );
   }
 
-  const esTeatro = tipo === "teatro" || tipo === "obra";
-  const salaId = funcionInfo?.salaId || (esTeatro ? "ST" : "S2");
-  const sala = DB.salas.find((s) => s.id === salaId) || DB.salas[2];
-
-  const funcionActual = {
-    id,
-    titulo: contenido.titulo || "Función",
-    tipo: esTeatro ? "Teatro" : "Cine",
-    precio: sala?.precioBase || 5000,
-    fecha: funcionInfo?.fecha || new Date().toLocaleDateString("es-CL"),
-    hora: funcionInfo?.hora || "",
-    salaId,
-  };
-
   return (
     <main className="container py-4">
       <div className="row g-4">
         <div className="col-lg-5">
-          <Contenido id={id} tipo={tipo} />
+          <Contenido contenido={contenido} />
         </div>
 
         <div className="col-lg-7">
-          {funcionInfo && (
-            <div className="alert alert-success d-flex align-items-center gap-2 mb-3">
-              <i className="bi bi-lightning-fill" />
-              <div>
-                <strong>Compra rápida:</strong> {funcionInfo.fecha} ·{" "}
-                {funcionInfo.hora}
-                {asientos.length > 0 && (
-                  <>
-                    {" "}
-                    · Asientos: <strong>{asientos.join(", ")}</strong>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          <DetalleHorario id={id} tipo={tipo} />
-
-          <div className="mt-4">
-            <SeatSelector
-              salaId={salaId}
-              value={asientos}
-              onChange={setAsientos}
-            />
-          </div>
-
-          <div className="mt-4">
-            <SnacksSection tipo={tipo} onChange={setSnacks} />
-          </div>
-
-          <div className="mt-4">
-            <QuickPurchaseButton
-              funcion={funcionActual}
-              snacksSeleccionados={snacks}
-              asientos={asientos}
-            />
+          <h2 className="h2 fw-bold mb-3 mt-4">HORARIO</h2>
+          <div className="alert alert-secondary">
+            <i className="bi bi-calendar-event me-2" />
+            <strong>Próximamente funciones.</strong> Este contenido aún no tiene
+            funciones programadas. El horario, la selección de butacas y la compra
+            estarán disponibles cuando se habilite el servicio de funciones.
           </div>
         </div>
       </div>
