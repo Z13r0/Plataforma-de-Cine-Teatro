@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import "./CardExtendido.css";
-import { getContentById, getFunciones } from "../data/db";
 
 const COLOR_CLASIFICACION = {
   TE: "bg-success",
@@ -9,16 +8,18 @@ const COLOR_CLASIFICACION = {
   "+18": "bg-danger",
 };
 
-export default function CardExtendido({ id, tipo = "cine" }) {
-  const contenido = getContentById(id, tipo);
-
+/**
+ * CardExtendido.jsx — Tarjeta horizontal de película u obra.
+ * Recibe el contenido ya resuelto (modelo de vista) mediante props.
+ * Los horarios quedan en "Próximamente funciones" hasta que exista el ms de funciones.
+ */
+export default function CardExtendido({ contenido }) {
   if (!contenido) {
     return null;
   }
 
-  const { titulo, genero, sinopsis, duracion, clasificacion, imagen } = contenido;
+  const { id, tipo, titulo, genero, sinopsis, duracion, clasificacion, imagen } = contenido;
   const generoTexto = Array.isArray(genero) ? genero.join(" / ") : genero;
-  const funciones = getFunciones(id, tipo);
   const colorClasificacion = COLOR_CLASIFICACION[clasificacion] || "bg-secondary";
 
   return (
@@ -61,19 +62,7 @@ export default function CardExtendido({ id, tipo = "cine" }) {
                 Horarios disponibles:
               </span>
               <div className="d-flex flex-wrap gap-2 justify-content-lg-end mb-3">
-                {funciones.length > 0 ? (
-                  funciones.map((funcion) => (
-                    <a
-                      key={funcion.id}
-                      href="#"
-                      className="btn btn-outline-danger btn-sm"
-                    >
-                      {funcion.hora}
-                    </a>
-                  ))
-                ) : (
-                  <span className="text-secondary small">Sin funciones disponibles</span>
-                )}
+                <span className="text-secondary small">Próximamente funciones</span>
               </div>
 
               <Link to={`/contenido/${tipo}/${id}`} className="btn btn-danger btn-sm">

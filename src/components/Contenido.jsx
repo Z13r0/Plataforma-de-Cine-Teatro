@@ -1,9 +1,10 @@
 import "./Contenido.css";
-import { getContentById } from "../data/db";
 
-export default function Contenido({ id, tipo = "cine" }) {
-  const contenido = getContentById(id, tipo);
-
+/**
+ * Contenido.jsx — Ficha descriptiva de una película u obra.
+ * Recibe el contenido ya resuelto (modelo de vista) mediante props.
+ */
+export default function Contenido({ contenido }) {
   if (!contenido) {
     return <p className="text-secondary">No se encontró el contenido.</p>;
   }

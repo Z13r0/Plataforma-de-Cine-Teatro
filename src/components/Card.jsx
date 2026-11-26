@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import "./Card.css";
-import { ESTILOS_POR_TIPO, getContentById } from "../data/db";
+import { ESTILOS_POR_TIPO } from "../data/db";
 
-export default function Card({ id, tipo = "cine" }) {
-  const contenido = getContentById(id, tipo);
-
+/**
+ * Card.jsx — Tarjeta de película u obra.
+ * Recibe el contenido ya resuelto (modelo de vista) mediante props.
+ */
+export default function Card({ contenido }) {
   if (!contenido) {
     return null;
   }
 
-  const { titulo, genero, duracion, valoracion, imagen } = contenido;
+  const { id, tipo, titulo, genero, duracion, valoracion, imagen } = contenido;
   const descripcion = Array.isArray(genero) ? genero.join(", ") : genero;
   const estilo = ESTILOS_POR_TIPO[tipo] || ESTILOS_POR_TIPO.cine;
 
@@ -42,7 +44,7 @@ export default function Card({ id, tipo = "cine" }) {
             {duracion}
           </span>
           <span className="badge bg-dark border border-secondary text-warning">
-            ⭐ {valoracion}
+            ⭐ {valoracion ?? "—"}
           </span>
         </div>
         <Link

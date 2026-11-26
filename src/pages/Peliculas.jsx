@@ -1,32 +1,77 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Buscador from "../components/Buscador";
 import CardExtendido from "../components/CardExtendido";
-import { DB, filtrarContenido, obtenerGeneros } from "../data/db";
+import { listarContenidos } from "../api/contenido";
+import { filtrarContenido, obtenerGeneros } from "../data/db";
 
-const GENEROS = obtenerGeneros(DB.peliculas);
 const FILTROS_INICIALES = { texto: "", genero: "", clasificacion: "" };
 
+/**
+ * Peliculas.jsx — Catálogo de películas (tipo "cine") desde el servicio de contenido.
+ */
 export default function Peliculas() {
   const [filtros, setFiltros] = useState(FILTROS_INICIALES);
-  const resultados = filtrarContenido(DB.peliculas, filtros);
+  const [peliculas, setPeliculas] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let vivo = true;
+
+    listarContenidos()
+      .then((lista) => {
+        if (vivo) {
+          setPeliculas(lista.filter((contenido) => contenido.tipo === "cine"));
+        }
+      })
+      .catch(() => {
+        if (vivo) setError(true);
+      })
+      .finally(() => {
+        if (vivo) setCargando(false);
+      });
+
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  const generos = obtenerGeneros(peliculas);
+  const resultados = filtrarContenido(peliculas, filtros);
 
   return (
     <main className="container py-4">
       <h1 className="h3 fw-bold mb-4">Películas</h1>
 
-      <Buscador filtros={filtros} onCambiar={setFiltros} generos={GENEROS} />
+      <Buscador filtros={filtros} onCambiar={setFiltros} generos={generos} />
+
+      {cargando && (
+        <div className="text-center py-5">
+          <div className="spinner-border text-danger" role="status" />
+          <p className="text-secondary mt-2">Cargando películas…</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center text-white py-5">
+          <p className="fs-5">No se pudo cargar el catálogo. Intenta nuevamente más tarde.</p>
+        </div>
+      )}
 
       <div className="row g-4">
-        {resultados.length > 0 ? (
+        {!cargando && !error && resultados.length > 0 ? (
           resultados.map((pelicula) => (
             <div className="col-12" key={pelicula.id}>
-              <CardExtendido id={pelicula.id} tipo={pelicula.tipo} />
+              <CardExtendido contenido={pelicula} />
             </div>
           ))
         ) : (
-          <div className="text-center text-white py-5">
-            <p className="fs-5">No se encontraron películas que coincidan con la búsqueda.</p>
-          </div>
+          !cargando &&
+          !error && (
+            <div className="text-center text-white py-5">
+              <p className="fs-5">No se encontraron películas que coincidan con la búsqueda.</p>
+            </div>
+          )
         )}
       </div>
     </main>
