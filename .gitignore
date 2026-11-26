@@ -12,6 +12,8 @@ coverage
 dist
 dist-ssr
 *.local
+AGENTS.md
+MEMORY.md
 
 # Editor directories and files
 .vscode/*
