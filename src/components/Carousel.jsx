@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Carousel as CarruselBootstrap } from "bootstrap";
-import { obtenerDestacados } from "../api/destacados";
+import { obtenerDestacados } from "../api/contenido";
 
 /**
  * Carousel.jsx — Carrusel de destacados de la página de inicio.

@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import Carousel from "../components/Carousel";
-import { obtenerDestacados } from "../api/destacados";
+import { obtenerDestacados } from "../api/contenido";
 
-// Se simula el servicio de destacados: el carrusel debe renderizar lo que devuelva
-vi.mock("../api/destacados", () => ({
+// Se simula el servicio de contenido: el carrusel debe renderizar los destacados que devuelva
+vi.mock("../api/contenido", () => ({
     obtenerDestacados: vi.fn(),
 }));
 

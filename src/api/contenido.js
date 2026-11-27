@@ -1,17 +1,16 @@
-/**
- * contenido.js — Servicio de contenido contra el gateway (API real).
- * Único punto de acceso a películas y obras para los componentes del frontend.
- * Cuando el backend cambie, solo se ajusta este archivo (los componentes no se tocan).
- *
- * Endpoints usados (vía gateway):
- *   GET  /api/v1/contenidos            → catálogo completo
- *   GET  /api/v1/contenidos/{id}       → contenido por id
- *   GET  /api/v1/contenidos/destacados → contenido activo y destacado
- */
-import { API_BASE_URL } from "./config";
-import { mapearContenido, mapearListaContenidos } from "./mappers/contenidoMapper";
+// Microservicio de contenido: transporte HTTP, contenido y destacados.
+// Un solo archivo por microservicio. El mapeo DTO del backend → modelo de vista
+// vive en mappers/contenidoMapper.js.
 
-/** Error HTTP con el código de estado para poder distinguir 404 de fallos reales. */
+import { API_BASE_URL } from "./config";
+import {
+  mapearContenido,
+  mapearListaContenidos,
+} from "./mappers/contenidoMapper";
+
+// ============ TRANSPORTE HTTP ============
+
+// Error HTTP con el código de estado para distinguir 404 de fallos reales.
 class ErrorApi extends Error {
   constructor(ruta, status) {
     super(`Error ${status} al consultar ${ruta}`);
@@ -20,7 +19,7 @@ class ErrorApi extends Error {
   }
 }
 
-/** Ejecuta una petición GET contra el gateway y devuelve el JSON de la respuesta. */
+// Ejecuta una petición GET contra el gateway y devuelve el JSON de la respuesta.
 async function pedir(ruta) {
   const respuesta = await fetch(`${API_BASE_URL}${ruta}`);
 
@@ -30,19 +29,15 @@ async function pedir(ruta) {
   return respuesta.json();
 }
 
-/**
- * Catálogo de contenido activo (visible para el público).
- * @returns {Promise<Array>} Lista del modelo de vista (id, tipo, titulo, genero, ...)
- */
+// ============ CONTENIDO ============
+
+// Catálogo de contenido activo (visible para el público).
 export async function listarContenidos() {
   const contenidos = await pedir("/api/v1/contenidos");
   return mapearListaContenidos(contenidos).filter((contenido) => contenido.activo);
 }
 
-/**
- * Contenido por id. Devuelve null si no existe o no está activo (como "no encontrado").
- * @param {number} id - idContenido del backend
- */
+// Contenido por id. Devuelve null si no existe o no está activo (como "no encontrado").
 export async function obtenerContenido(id) {
   let dto;
   try {
@@ -58,11 +53,46 @@ export async function obtenerContenido(id) {
   return contenido.activo ? contenido : null;
 }
 
-/**
- * Contenido destacado y activo (selección del admin) para el carrusel de inicio.
- * @returns {Promise<Array>} Lista del modelo de vista.
- */
+// ============ DESTACADOS ============
+
+// Presentación del carrusel por tipo de contenido: badge, colores del botón y su texto.
+const PRESENTACION_POR_TIPO = {
+  cine: {
+    etiqueta: "Estreno de Cine",
+    insignia: "bg-warning text-dark",
+    boton: "btn-danger",
+    textoBoton: "Ver Funciones",
+  },
+  teatro: {
+    etiqueta: "Gran Obra de Teatro",
+    insignia: "bg-primary",
+    boton: "btn-primary",
+    textoBoton: "Reservar Butacas",
+  },
+};
+
+// Contenido destacado y activo (selección del admin) para el carrusel de inicio.
 export async function listarDestacados() {
   const contenidos = await pedir("/api/v1/contenidos/destacados");
   return mapearListaContenidos(contenidos);
+}
+
+// Slides del carrusel listos para renderizar (N destacados).
+export async function obtenerDestacados() {
+  const contenidos = await listarDestacados();
+
+  return contenidos.map((contenido) => {
+    const presentacion =
+      PRESENTACION_POR_TIPO[contenido.tipo] || PRESENTACION_POR_TIPO.cine;
+
+    return {
+      id: contenido.id,
+      tipo: contenido.tipo,
+      titulo: contenido.titulo,
+      imagen: contenido.imagen,
+      descripcion: contenido.sinopsis,
+      enlace: `/contenido/${contenido.tipo}/${contenido.id}`,
+      ...presentacion,
+    };
+  });
 }
