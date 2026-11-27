@@ -19,9 +19,23 @@ class ErrorApi extends Error {
   }
 }
 
-// Ejecuta una petición GET contra el gateway y devuelve el JSON de la respuesta.
-async function pedir(ruta) {
+// GET: consulta una ruta del gateway y devuelve su JSON.
+async function get(ruta) {
   const respuesta = await fetch(`${API_BASE_URL}${ruta}`);
+
+  if (!respuesta.ok) {
+    throw new ErrorApi(ruta, respuesta.status);
+  }
+  return respuesta.json();
+}
+
+// POST: envía datos como cuerpo JSON y devuelve el JSON creado.
+async function post(ruta, datos) {
+  const respuesta = await fetch(`${API_BASE_URL}${ruta}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos),
+  });
 
   if (!respuesta.ok) {
     throw new ErrorApi(ruta, respuesta.status);
@@ -33,7 +47,7 @@ async function pedir(ruta) {
 
 // Catálogo de contenido activo (visible para el público).
 export async function listarContenidos() {
-  const contenidos = await pedir("/api/v1/contenidos");
+  const contenidos = await get("/api/v1/contenidos");
   return mapearListaContenidos(contenidos).filter((contenido) => contenido.activo);
 }
 
@@ -41,7 +55,7 @@ export async function listarContenidos() {
 export async function obtenerContenido(id) {
   let dto;
   try {
-    dto = await pedir(`/api/v1/contenidos/${id}`);
+    dto = await get(`/api/v1/contenidos/${id}`);
   } catch (error) {
     if (error instanceof ErrorApi && error.status === 404) {
       return null;
@@ -73,7 +87,7 @@ const PRESENTACION_POR_TIPO = {
 
 // Contenido destacado y activo (selección del admin) para el carrusel de inicio.
 export async function listarDestacados() {
-  const contenidos = await pedir("/api/v1/contenidos/destacados");
+  const contenidos = await get("/api/v1/contenidos/destacados");
   return mapearListaContenidos(contenidos);
 }
 
@@ -95,4 +109,68 @@ export async function obtenerDestacados() {
       ...presentacion,
     };
   });
+}
+
+// ============ CATÁLOGOS ============
+
+// Normaliza un nombre para comparar sin distinguir mayúsculas ni espacios al borde.
+function comparable(texto) {
+  return String(texto).trim().toLowerCase();
+}
+
+// Los catálogos se normalizan a pares { id, nombre } para usarlos indistintamente
+// en el formulario del admin (el nombre del formato viene como tipoFormato).
+function mapearCatalogo(dto, campoId, campoNombre) {
+  return { id: dto[campoId], nombre: dto[campoNombre] };
+}
+
+// Géneros existentes (solo lectura: se asumen cargados en la base de datos).
+export async function listarGeneros() {
+  const lista = await get("/api/v1/generos");
+  return lista.map((dto) => mapearCatalogo(dto, "idGenero", "nombre"));
+}
+
+// Formatos existentes (solo lectura: se asumen cargados en la base de datos).
+export async function listarFormatos() {
+  const lista = await get("/api/v1/formatos");
+  return lista.map((dto) => mapearCatalogo(dto, "idFormato", "tipoFormato"));
+}
+
+// Directores existentes (base para las sugerencias del autocompletar).
+export async function listarDirectores() {
+  const lista = await get("/api/v1/directores");
+  return lista.map((dto) => mapearCatalogo(dto, "idDirector", "nombre"));
+}
+
+// Reparto existente (base para las sugerencias del autocompletar).
+export async function listarReparto() {
+  const lista = await get("/api/v1/repartos");
+  return lista.map((dto) => mapearCatalogo(dto, "idActor", "nombreActor"));
+}
+
+// Crea un director nuevo en el backend.
+export async function crearDirector(nombre) {
+  const dto = await post("/api/v1/directores", { nombre });
+  return mapearCatalogo(dto, "idDirector", "nombre");
+}
+
+// Crea un actor de reparto nuevo en el backend.
+export async function crearReparto(nombreActor) {
+  const dto = await post("/api/v1/repartos", { nombreActor });
+  return mapearCatalogo(dto, "idActor", "nombreActor");
+}
+
+// Devuelve el director existente si el nombre coincide; si no existe, lo crea.
+// Así jamás se duplican los que ya están en la base de datos.
+export async function obtenerOCrearDirector(nombre, existentes = []) {
+  const buscado = comparable(nombre);
+  const existente = existentes.find((item) => comparable(item.nombre) === buscado);
+  return existente ?? crearDirector(nombre.trim());
+}
+
+// Ídem para actores de reparto.
+export async function obtenerOCrearReparto(nombreActor, existentes = []) {
+  const buscado = comparable(nombreActor);
+  const existente = existentes.find((item) => comparable(item.nombre) === buscado);
+  return existente ?? crearReparto(nombreActor.trim());
 }
