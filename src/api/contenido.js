@@ -43,6 +43,30 @@ async function post(ruta, datos) {
   return respuesta.json();
 }
 
+// PUT: reemplaza un recurso con el cuerpo JSON enviado y devuelve el JSON actualizado.
+async function put(ruta, datos) {
+  const respuesta = await fetch(`${API_BASE_URL}${ruta}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos),
+  });
+
+  if (!respuesta.ok) {
+    throw new ErrorApi(ruta, respuesta.status);
+  }
+  return respuesta.json();
+}
+
+// PATCH: aplica un cambio puntual indicado en la ruta (query param) y devuelve el JSON actualizado.
+async function patch(ruta) {
+  const respuesta = await fetch(`${API_BASE_URL}${ruta}`, { method: "PATCH" });
+
+  if (!respuesta.ok) {
+    throw new ErrorApi(ruta, respuesta.status);
+  }
+  return respuesta.json();
+}
+
 // ============ CONTENIDO ============
 
 // Catálogo de contenido activo (visible para el público).
@@ -67,6 +91,30 @@ export async function obtenerContenido(id) {
   return contenido.activo ? contenido : null;
 }
 
+// Catálogo completo para el admin: incluye el contenido inactivo.
+export async function listarTodosContenidos() {
+  const contenidos = await get("/api/v1/contenidos");
+  return mapearListaContenidos(contenidos);
+}
+
+// Crea una película u obra. Recibe el formato del backend y devuelve el contenido creado.
+export async function crearContenido(datos) {
+  const dto = await post("/api/v1/contenidos", datos);
+  return mapearContenido(dto);
+}
+
+// Actualiza una película u obra por id y devuelve el contenido actualizado.
+export async function actualizarContenido(id, datos) {
+  const dto = await put(`/api/v1/contenidos/${id}`, datos);
+  return mapearContenido(dto);
+}
+
+// Activa o desactiva un contenido (papelera y restaurar del admin).
+export async function cambiarActivo(id, activo) {
+  const dto = await patch(`/api/v1/contenidos/${id}/activo?activo=${activo}`);
+  return mapearContenido(dto);
+}
+
 // ============ DESTACADOS ============
 
 // Presentación del carrusel por tipo de contenido: badge, colores del botón y su texto.
@@ -89,6 +137,12 @@ const PRESENTACION_POR_TIPO = {
 export async function listarDestacados() {
   const contenidos = await get("/api/v1/contenidos/destacados");
   return mapearListaContenidos(contenidos);
+}
+
+// Marca o quita el destacado de un contenido (el botón de estrella del admin).
+export async function cambiarDestacado(id, destacado) {
+  const dto = await patch(`/api/v1/contenidos/${id}/destacado?destacado=${destacado}`);
+  return mapearContenido(dto);
 }
 
 // Slides del carrusel listos para renderizar (N destacados).
